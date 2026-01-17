@@ -1,12 +1,21 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Sliders, Settings, LogOut,Plus  } from "lucide-react";
+import {
+  LayoutDashboard,
+  Sliders,
+  Settings,
+  LogOut,
+  Plus,
+  Menu,
+  X,
+} from "lucide-react";
 import { Appcontent } from "../context/Appcontext";
 import axios from "axios";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const { backendUrl, setuserData, setisLoggedin } = useContext(Appcontent);
+  const [open, setOpen] = useState(false);
 
   const logout = async () => {
     await axios.post(backendUrl + "/api/auth/logout");
@@ -17,59 +26,134 @@ const Sidebar = () => {
 
   const linkClass =
     "flex items-center gap-3 px-4 py-2 rounded-md text-gray-300 hover:bg-slate-800 dark:hover:bg-zinc-800 transition";
-  
+
   const activeClass =
     "bg-slate-800 dark:bg-zinc-800 text-white";
 
   return (
-    <div className="w-60 min-h-screen px-4 py-6 flex flex-col bg-slate-900 dark:bg-zinc-950">
-      <h1 className="text-xl font-semibold text-white mb-8 text-center tracking-wide">
-        Control Panel
-      </h1>
-
-      <nav className="flex flex-col gap-2 flex-1">
-        <NavLink to="/dashboard" className={({ isActive }) =>
-          `${linkClass} ${isActive ? activeClass : ""}`
-        }>
-          <LayoutDashboard size={18} />
-          Dashboard
-        </NavLink>
-
-         <NavLink to="/add-device" className={({ isActive }) =>
-          `${linkClass} ${isActive ? activeClass : ""}`
-        }>
-         
-          <Plus size={18}/>
-          Add-Device
-        </NavLink>
-
-        <NavLink to="/about" className={({ isActive }) =>
-          `${linkClass} ${isActive ? activeClass : ""}`
-        }>
-          <Sliders size={18} />
-          About
-        </NavLink>
-
-       
-
-       
-
-        <NavLink to="/settings" className={({ isActive }) =>
-          `${linkClass} ${isActive ? activeClass : ""}`
-        }>
-          <Settings size={18} />
-          Settings
-        </NavLink>
-      </nav>
-
+    <>
+      {/* Mobile Menu Button */}
       <button
-        onClick={logout}
-        className="flex items-center gap-3 px-4 py-2 text-gray-400 hover:text-white hover:bg-slate-800 dark:hover:bg-zinc-800 rounded-md transition"
+        onClick={() => setOpen(true)}
+        className="
+          fixed top-4 left-4 z-50
+          md:hidden
+          p-2
+          rounded-md
+          bg-slate-800
+          text-white
+        "
       >
-        <LogOut size={18} />
-        Logout
+        <Menu size={20} />
       </button>
-    </div>
+
+      {/* Overlay (mobile) */}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          className="
+            fixed inset-0 z-40
+            bg-black/50
+            md:hidden
+          "
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`
+          fixed md:static
+          top-0 left-0 z-50
+          w-64
+          min-h-screen
+          px-4 py-6
+          flex flex-col
+          bg-slate-900
+          dark:bg-zinc-950
+          transform
+          transition-transform
+          duration-300
+          ${open ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0
+        `}
+      >
+        {/* Close Button (mobile) */}
+        <div className="flex items-center justify-between mb-6 md:hidden">
+          <h1 className="text-lg font-semibold text-white tracking-wide">
+            Control Panel
+          </h1>
+          <button onClick={() => setOpen(false)}>
+            <X size={20} className="text-gray-400" />
+          </button>
+        </div>
+
+        {/* Desktop Title */}
+        <h1 className="hidden md:block text-xl font-semibold text-white mb-8 text-center tracking-wide">
+          Control Panel
+        </h1>
+
+        {/* Nav */}
+        <nav className="flex flex-col gap-2 flex-1">
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
+            <LayoutDashboard size={18} />
+            Dashboard
+          </NavLink>
+
+          <NavLink
+            to="/add-device"
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
+            <Plus size={18} />
+            Add Device
+          </NavLink>
+
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
+            <Sliders size={18} />
+            About
+          </NavLink>
+
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
+            <Settings size={18} />
+            Settings
+          </NavLink>
+        </nav>
+
+        {/* Logout */}
+        <button
+          onClick={logout}
+          className="
+            flex items-center gap-3
+            px-4 py-2
+            text-gray-400
+            hover:text-white
+            hover:bg-slate-800
+            dark:hover:bg-zinc-800
+            rounded-md
+            transition
+          "
+        >
+          <LogOut size={18} />
+          Logout
+        </button>
+      </div>
+    </>
   );
 };
 

@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Appcontent } from "../context/Appcontext.jsx";
 
 const MainPage = () => {
+  const { darkMode } = useContext(Appcontent);
+
   return (
-    <div className="min-h-screen bg-slate-50 text-black p-8">
+    <div
+      className={`min-h-screen p-8 transition-colors duration-500 ${
+        darkMode ? "bg-zinc-900 text-white" : "bg-slate-50 text-black"
+      }`}
+    >
       <h1 className="text-3xl font-bold mb-6">Aerothermal Project Overview</h1>
 
       <p className="mb-4">
@@ -11,21 +18,38 @@ const MainPage = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {/* Card Example */}
-        <div className="bg-white rounded-lg shadow p-4">
+        <div
+          className={`rounded-lg shadow p-4 transition-colors duration-500 ${
+            darkMode ? "bg-zinc-800 shadow-zinc-700" : "bg-white shadow-gray-200"
+          }`}
+        >
           <h2 className="font-semibold mb-2">System Status</h2>
           <p>All sensors are operational.</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-4">
+        <div
+          className={`rounded-lg shadow p-4 transition-colors duration-500 ${
+            darkMode ? "bg-zinc-800 shadow-zinc-700" : "bg-white shadow-gray-200"
+          }`}
+        >
           <h2 className="font-semibold mb-2">Recent Data</h2>
           <p>Last updated: 10:55 PM</p>
-          {/* You can add mini charts / summary here */}
+          {/* Mini charts / summary can go here */}
         </div>
       </div>
 
       <div className="mt-6">
-        <p>Use the Dashboard to monitor live Temperature, RPM, PWM, and Auto Mode settings.</p>
-        <a href="/dashboard" className="text-blue-600 hover:underline">
+        <p>
+          Use the Dashboard to monitor live Temperature, RPM, PWM, and Auto Mode settings.
+        </p>
+        <a
+          href="/dashboard"
+          className={`mt-2 inline-block ${
+            darkMode
+              ? "text-cyan-400 hover:text-cyan-300"
+              : "text-blue-600 hover:text-blue-500"
+          } underline`}
+        >
           Go to Dashboard
         </a>
       </div>
