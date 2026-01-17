@@ -51,6 +51,7 @@ const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
         <span>0</span>
         <span>255</span>
       </div>
+
     </div>
   );
 };
