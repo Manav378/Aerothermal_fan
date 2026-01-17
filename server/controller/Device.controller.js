@@ -1,9 +1,6 @@
 import DeviceModels from "../models/Device.model.js";
 
-  const OFFLINE_TIME = 30 * 1000
-
-
-
+const OFFLINE_TIME = 30 * 1000;
 
 export const getDevice = async (req, res) => {
   try {
@@ -16,64 +13,89 @@ export const getDevice = async (req, res) => {
 
       return {
         ...device._doc,
-        isOnline
+        isOnline,
       };
     });
 
     res.status(200).json({
       success: true,
-      data: updatedIsOnline
+      data: updatedIsOnline,
     });
-
   } catch (error) {
     console.log(error);
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
 
+export const getMyActiveDevice = async (req, res) => {
+  const device = await DeviceModels.findOne({
+    user: req.userId,
+    isActive: true
+  });
 
-export  const Adddevice= async(req,res)=>{
-       try {
-    const { devicePass_Key,EnterdevicePass_Key } = req.body;
-    const userId = req.userId;
-
-    const device = await DeviceModels.findOne({ devicePass_Key });
-
-    if(EnterdevicePass_Key !== device.devicePass_Key) return res.json({success:false , message:"wrong device Pass key!"})
-
-    
-
-    if (!device) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid Device ID"
-      });
-    }
-
-    if (device.user) {
-      return res.status(400).json({
-        success: false,
-        message: "Device already linked"
-      });
-    }
-
-    device.user = userId;
-    await device.save();
-
-    res.json({
-      success: true,
-      message: "Device added successfully",
-      device
-    });
-
-    } catch (error) {
-       console.log(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-    }
+  if (!device) {
+    return res.json({ success: false });
   }
+
+  const isOnline =
+    Date.now() - new Date(device.lastSeen).getTime() < 30000;
+
+  if (!isOnline) {
+    device.isActive = false;
+    device.isVerified = false;
+    device.temperature = 0;
+    device.rpm = 0;
+    device.pwm = 0;
+    await device.save();
+  }
+
+  res.json({
+    success: true,
+    device: {
+      deviceName: device.deviceName,
+      temperature: device.temperature,
+      rpm: device.rpm,
+      pwm: device.pwm,
+      isOnline
+    }
+  });
+};
+
+
+export const Adddevice = async (req, res) => {
+  const { devicePass_Key, EnterdevicePass_Key } = req.body;
+  const userId = req.userId;
+
+  const device = await DeviceModels.findOne({ devicePass_Key });
+  if (!device) return res.json({ success: false, message: "Invalid passkey" });
+
+  if (EnterdevicePass_Key !== device.devicePass_Key)
+    return res.json({ success: false, message: "Wrong passkey" });
+
+  // 🔥 deactivate old devices
+  await DeviceModels.updateMany(
+    { user: userId },
+    { $set: { isActive: false } }
+  );
+
+  // 🔥 activate current device
+  device.user = userId;
+  device.isVerified = true;
+  device.isActive = true;
+  device.lastSeen = new Date();
+  await device.save();
+
+  res.json({ success: true, deviceId: device._id });
+};
+
+
+
+
+
+
+
+
+

@@ -1,11 +1,15 @@
 import express from 'express'
-import { Adddevice, getDevice } from '../controller/Device.controller.js';
-import userAuth from '../middelware/userAuth.js';
+import { Adddevice, getDevice, getMyActiveDevice } from '../controller/Device.controller.js';
+
+
 
 const DeviceRouter = express()
 
 
-DeviceRouter.post("/add" ,userAuth,Adddevice );
+DeviceRouter.post("/add" ,Adddevice );
 DeviceRouter.get("/" ,getDevice );
+// server/routes/Device.routes.js
+DeviceRouter.get("/my-device", getMyActiveDevice);
+
 
 export default DeviceRouter

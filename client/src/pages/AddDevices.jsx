@@ -13,7 +13,7 @@ const AddDevice = () => {
   const [enterdevice, setenterdevice] = useState("");
   const [connecting, setConnecting] = useState(false);
 
-  const { backendUrl } = useContext(Appcontent);
+  const { backendUrl,setIsOnlineDeviceData, } = useContext(Appcontent);
   const navigate = useNavigate()
   useEffect(() => {
     const fetchDevices = async () => {
@@ -37,33 +37,29 @@ const AddDevice = () => {
     fetchDevices();
   }, [backendUrl]);
 
-  const handleConnectDevice = async () => {
-    if (!selectedDeviceId) return;
-    setConnecting(true);
+const handleConnectDevice = async () => {
+  if (!selectedDeviceId) return;
 
-    try {
+  try {
+    const res = await axios.post(`${backendUrl}/api/device/add`, {
+      devicePass_Key: selectedDeviceId,
+      EnterdevicePass_Key: enterdevice
+    });
 
-      // Example API call to connect a device
-      const res = await axios.post(`${backendUrl}/api/device/add`, {
-        devicePass_Key: selectedDeviceId, EnterdevicePass_Key: enterdevice
-      }, { withCredentials: true });
+    if (res.data.success) {
+      // Save the device in AppContext
+      setIsOnlineDeviceData(res.data.device);
 
-      if (res.data.success) {
-
-        toast.success(`Device ${devices.deviceName} connected successfully!`);
-        setIsModalOpen(false);
-        navigate("/dashboard")
-      } else {
-        console.log(res.data.message);
-        toast.error(`Failed to connect device: ${res.data.message}`);
-      }
-    } catch (err) {
-      console.error("Failed to connect device", err);
-      toast.error("Failed to connect device. Check console for details.");
-    } finally {
-      setConnecting(false);
+      toast.success("Device connected!");
+      navigate("/dashboard");
+    } else {
+      toast.error(res.data.message);
     }
-  };
+  } catch (err) {
+    toast.error("Failed to connect device");
+  }
+};
+
 
   if (loading) return <p className="p-6 text-gray-500">Loading devices...</p>;
   if (error) return <p className="p-6 text-red-500">{error}</p>;

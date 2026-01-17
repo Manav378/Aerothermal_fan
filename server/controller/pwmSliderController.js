@@ -1,22 +1,20 @@
+let currPWM = 80;        // PWM_MIN (IMPORTANT)
+let autoMode = false;
 
-let currSlider = 0;
-let automode = false;
-export function setpwmSlider(duty){
-    currSlider = duty;
-  console.log("⚡ PWM SET TO:", duty);
+export function setPWM(val) {
+  currPWM = val;
+  console.log("⚡ MANUAL PWM SET:", currPWM);
 }
 
-export function getpwmSlider(){
-    return currSlider;
+export function getPWM() {
+  return currPWM;
 }
 
-
-export function setAutomode(val){
-automode = val;
- console.log("AUTO MODE:", automode);
-
+export function setAutoMode(val) {
+  autoMode = val;
+  console.log("🤖 AUTO MODE:", autoMode);
 }
 
-export function isAutomode(){
-    return automode;
+export function isAutoMode() {
+  return autoMode;
 }

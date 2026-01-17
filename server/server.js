@@ -8,15 +8,19 @@ import userrouter from './routes/user.routes.js'
 import  dashboardroute from './routes/dahboard.routes.js'
 import DeviceRouter from './routes/device.routes.js'
 
+
+
+
 console.log("server")
 dotenv.config();
 const app = express()
-const PORT  = process.env.PORT || 4000
-app.use(express.json());
 const allowedOrigin  = ['http://localhost:5175']
+app.use(cors({origin:allowedOrigin,credentials:true}));
+
+const PORT  = process.env.PORT || 4000
+
 app.use(express.json({  strict: false}));
 app.use(cookieParser());
-app.use(cors({origin:allowedOrigin,credentials:true}));
 conndb()
 
 app.get("/" , (req,res)=>{

@@ -1,15 +1,8 @@
-// server/controller/dashboard.controller.js
-import { setpwmSlider, getpwmSlider, isAutomode, setAutomode } from './pwmSliderController.js';
-import { Calculatepwm } from './autologicAutomode.js';
+
+import { getPWM, isAutoMode, setAutoMode,setPWM } from './pwmSliderController.js';
+
 import DeviceModels from '../models/Device.model.js';
 
-// In-memory storage for sensor data
-export let DashData = {
-    temperature: 0,
-    rpm: 0,
-    pwm:0,
-    deviceName:"ESP32_FAN_1"
-};
 
 // ESP32 POST: update temperature & RPM
 export const sensorController = async (req, res) => {
@@ -25,12 +18,6 @@ export const sensorController = async (req, res) => {
         message: "devicePass_Key is required"
       });
     }
-
-  
-    if (typeof temperature === "number") DashData.temperature = temperature;
-    if (typeof rpm === "number") DashData.rpm = rpm;
-    if (typeof pwm === "number") DashData.pwm = pwm;
-
   
     let device = await DeviceModels.findOne({ devicePass_Key });
 
@@ -53,10 +40,6 @@ export const sensorController = async (req, res) => {
       await device.save();
     }
 
-    if (isAutomode()) {
-      const autoPwm = Calculatepwm(DashData.temperature);
-      setpwmSlider(autoPwm);
-    }
 
     res.status(200).json({
       success: true,
@@ -75,44 +58,35 @@ export const sensorController = async (req, res) => {
 
 
 
-// Get current temperature
-export const tempController = (req, res) => {
-    res.status(200).json({ success: true, data: DashData.temperature });
+
+
+export const pwmSliderController = (req, res) => {
+  const { duty } = req.body;
+
+  if (isAutoMode())
+    return res.json({ ignored: "Auto mode ON" });
+
+  if (duty < 80 || duty > 255)
+    return res.status(400).json({ error: "Invalid PWM" });
+
+  setPWM(duty);
+  res.json({ success: true });
 };
 
-// Get current RPM
-export const rpmController = (req, res) => {
-    res.status(200).json({ success: true, data: DashData.rpm });
+export const autoModeController = (req, res) => {
+  const { enabled } = req.body;
+  setAutoMode(enabled);
+  res.json({ autoMode: enabled });
 };
 
-// Manual PWM slider
-export const rpmSliderController = (req, res) => {
-    const { duty } = req.body;
 
-    if (isAutomode()) return res.status(200).json({ ignored: "Auto mode ON" });
-    if (duty < 0 || duty > 255) return res.status(400).json({ error: "Invalid PWM value" });
-
-    setpwmSlider(duty);
-    res.status(200).json({ success: true });
-};
-
-// Check current PWM
-export const checkpwm = (req, res) => {
-    res.status(200).json({ pwm: getpwmSlider() });
-};
-
-// Enable/disable auto mode
-export const autmode = (req, res) => {
-    const { enabled } = req.body;
-    setAutomode(enabled);
-    res.status(200).json({ success: true });
+export const pwmStatusController = (req, res) => {
+  res.json({
+    autoMode: isAutoMode(),
+    manualPWM: getPWM(),
+  });
 };
 
 
 
-// pwm from ESP32
 
-export const pwm = (req,res)=>{
-    console.log(DashData.pwm)
-   res.status(200).json({ success: true, data: DashData.pwm }); 
-}

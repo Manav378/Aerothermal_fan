@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
     devices:[
         {
             type:mongoose.Schema.Types.ObjectId,
-            ref:"devices"
+            ref:"Device"
         }
     ]
 },{timestamps:true})

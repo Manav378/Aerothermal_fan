@@ -4,11 +4,20 @@ import mongoose from 'mongoose'
 const DeviceSchema = new mongoose.Schema({
     deviceName:{type:String , required:true,unique:true},
     devicePass_Key:{type:String , required:true , unique:true},
-    isOnline:{type:Boolean , default:false},
     lastSeen:{type:Date},
     temperature:Number,
     rpm:Number,
     pwm:Number,
+    user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user"
+  },
+   isVerified: { type: Boolean, default: false },
+   isActive: {
+  type: Boolean,
+  default: false
+}
+
 })
 
 
