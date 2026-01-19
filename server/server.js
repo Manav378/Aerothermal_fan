@@ -14,8 +14,26 @@ import DeviceRouter from './src/routes/device.routes.js'
 console.log("server")
 dotenv.config();
 const app = express()
-const allowedOrigin  = ['http://localhost:5175' , 'https://aerothermal-fanfronted.vercel.app']
-app.use(cors({origin:allowedOrigin,credentials:true}));
+const allowedOrigins = [
+  'http://localhost:5175',
+  'https://aerothermal-fanfronted.vercel.app'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // Postman / server calls
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.options('*', cors());
+
 
 const PORT  = process.env.PORT || 4000
 
