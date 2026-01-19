@@ -8,3 +8,8 @@
 
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+
+.background {
+  background-image: url('/bg_img.png');
+}
