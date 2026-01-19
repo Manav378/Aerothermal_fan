@@ -36,7 +36,7 @@ const onSubmitHandler = async (e) => {
       await getUserData();
 
       // Navigate based on signup or login
-      navigate(isSignup ? "/dashboard" : "/dashboard"); // <-- can be same for now
+      navigate(isSignup ? "/" : "/dashboard"); // <-- can be same for now
 
       toast.success(
         isSignup
