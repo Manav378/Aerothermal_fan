@@ -28,9 +28,9 @@ const Login = () => {
         state === "sign-up"
           ? { name, email, password }
           : { email, password };
-
+  console.log("Sending request to:", url, "with payload:", payload);
       const { data } = await axios.post(url, payload);
-
+console.log("Response received:", data);
       if (data.success) {
         setisLoggedin(true);
         await getUserData();
