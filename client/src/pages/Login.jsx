@@ -6,26 +6,25 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const [state, setState] = useState("sign-up");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [state, setstate] = useState("sign-up");
+  const [name, setname] = useState("");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
 
   const navigate = useNavigate();
-  const { backendUrl, setisLoggedin, getUserData, darkMode } = useContext(Appcontent);
+  const { backendUrl, setisLoggedin, getUserData } = useContext(Appcontent);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     axios.defaults.withCredentials = true;
 
     try {
-      const url =
+      let url =
         state === "sign-up"
           ? `${backendUrl}/api/auth/register`
           : `${backendUrl}/api/auth/login`;
 
-      const payload =
+      let payload =
         state === "sign-up"
           ? { name, email, password }
           : { email, password };
@@ -35,8 +34,8 @@ const Login = () => {
       if (data.success) {
         setisLoggedin(true);
         await getUserData();
-        navigate(state === "sign-up" ? "/" : "/dashboard");
-
+        state === "sign-up" ? navigate("/") : navigate("/dashboard")
+      
         toast.success(
           state === "sign-up"
             ? "System Initialized Successfully ⚙️"
@@ -51,113 +50,103 @@ const Login = () => {
   };
 
   return (
-    <div
-      className={`
-        relative flex items-center justify-center min-h-screen px-4
-        ${darkMode ? "bg-slate-900" : "bg-linear-to-br from-sky-200 via-blue-300 to-cyan-200"}
-      `}
-    >
+    <div className="flex items-center justify-center min-h-screen px-6 bg-linear-to-br from-slate-900 via-blue-950 to-slate-800 relative overflow-hidden">
+      
       {/* airflow glow */}
-      <div className="absolute inset-0 bg-[radial-linear(circle_at_top,rgba(56,189,248,0.15),transparent_60%)]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.15),transparent_60%)]"></div>
 
       {/* logo */}
       <img
         src={assets.aero}
         onClick={() => navigate("/")}
         className="absolute left-6 top-6 w-28 cursor-pointer opacity-90 hover:opacity-100 transition"
-        alt="Logo"
+        alt=""
       />
 
-      <div
-        className={`
-          relative z-10 p-10 w-full sm:w-104 rounded-2xl shadow-lg 
-          border border-sky-800/30 backdrop-blur-xl
-          transition-all duration-500 transform
-          ${darkMode ? "bg-slate-900/80 text-sky-200" : "bg-white/80 text-slate-900"}
-          animate-fadeIn
-        `}
-      >
-        {/* Heading */}
-        <h2 className="text-3xl font-bold text-center mb-2 tracking-wide text-sky-500">
-          {state === "sign-up"
-            ? "Aerothermal System Access"
-            : "Control Panel Login"}
+      <div className="relative z-10 bg-slate-900/80 backdrop-blur-xl border border-sky-800/40 p-10 rounded-2xl shadow-[0_0_40px_rgba(56,189,248,0.15)] w-full sm:w-104 text-sky-200 text-sm">
+
+        <h2 className="text-3xl font-bold text-center mb-2 tracking-wide text-sky-300">
+          {state === "sign-up" ? "Aerothermal System Access" : "Control Panel Login"}
         </h2>
+
         <p className="text-center text-xs mb-6 text-sky-400">
           {state === "sign-up"
             ? "Initialize fan monitoring & thermal control module"
             : "Authenticate to access real-time airflow data"}
         </p>
 
-        <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
+        <form onSubmit={onSubmitHandler}>
           {state === "sign-up" && (
-            <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-800/70 border border-sky-800/50">
-              <img src={assets.person_icon} alt="" className="opacity-80 w-6 h-6" />
+            <div className="mb-4 flex items-center gap-3 w-full px-5 py-3 rounded-xl bg-slate-800 border border-sky-800/50">
+              <img src={assets.person_icon} alt="" className="opacity-80" />
               <input
+                onChange={(e) => setname(e.target.value)}
+                value={name}
+                className="bg-transparent text-sky-100 outline-none w-full placeholder-sky-500"
                 type="text"
                 placeholder="Engineer Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="bg-transparent outline-none w-full placeholder-sky-500 text-sky-100"
                 required
               />
             </div>
           )}
 
-          <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-800/70 border border-sky-800/50">
-            <img src={assets.mail_icon} alt="" className="opacity-80 w-6 h-6" />
+          <div className="mb-4 flex items-center gap-3 w-full px-5 py-3 rounded-xl bg-slate-800 border border-sky-800/50">
+            <img src={assets.mail_icon} alt="" className="opacity-80" />
             <input
+              onChange={(e) => setemail(e.target.value)}
+              value={email}
+              className="bg-transparent text-sky-100 outline-none w-full placeholder-sky-500"
               type="email"
               placeholder="System Email ID"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-transparent outline-none w-full placeholder-sky-500 text-sky-100"
               required
             />
           </div>
 
-          <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-800/70 border border-sky-800/50 relative">
-            <img src={assets.lock_icon} alt="" className="opacity-80 w-6 h-6" />
+          <div className="mb-4 flex items-center gap-3 w-full px-5 py-3 rounded-xl bg-slate-800 border border-sky-800/50">
+            <img src={assets.lock_icon} alt="" className="opacity-80" />
             <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Secure Access Key"
+              onChange={(e) => setpassword(e.target.value)}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-transparent outline-none w-full placeholder-sky-500 text-sky-100"
+              className="bg-transparent text-sky-100 outline-none w-full placeholder-sky-500"
+              type="password"
+              placeholder="Secure Access Key"
               required
             />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 cursor-pointer text-sky-400 hover:text-sky-300 transition"
-            >
-              {showPassword ? "🙈" : "👁️"}
-            </span>
           </div>
 
           <p
             onClick={() => navigate("/reset-password")}
-            className="text-xs text-sky-400 cursor-pointer hover:text-sky-300 text-right"
+            className="mb-5 text-sky-400 cursor-pointer text-xs hover:text-sky-300 transition"
           >
             Reset Access Credentials?
           </p>
 
-          <button
-            type="submit"
-            className="py-3 rounded-xl bg-linear-to-r from-sky-500 to-cyan-700 text-white font-semibold tracking-wide hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] transition"
-          >
+          <button className="w-full py-3 rounded-xl bg-linear-to-r cursor-pointer from-sky-500 to-cyan-700 text-white font-semibold tracking-wide hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] transition">
             {state === "sign-up" ? "Initialize System" : "Enter Control Panel"}
           </button>
         </form>
 
-        <p className="text-center text-xs mt-5 text-slate-400">
-          {state === "sign-up" ? "Existing Operator?" : "New Deployment?"}{" "}
-          <span
-            onClick={() => setState(state === "sign-up" ? "login" : "sign-up")}
-            className="text-sky-400 cursor-pointer underline ml-1"
-          >
-            {state === "sign-up" ? "Login" : "Create Access"}
-          </span>
-        </p>
+        {state === "sign-up" ? (
+          <p className="text-slate-400 text-center text-xs mt-5">
+            Existing Operator?
+            <span
+              onClick={() => setstate("login")}
+              className="text-sky-400 cursor-pointer underline ml-1"
+            >
+              Login
+            </span>
+          </p>
+        ) : (
+          <p className="text-slate-400 text-center text-xs mt-5">
+            New Deployment?
+            <span
+              onClick={() => setstate("sign-up")}
+              className="text-sky-400 cursor-pointer underline ml-1"
+            >
+              Create Access
+            </span>
+          </p>
+        )}
       </div>
     </div>
   );

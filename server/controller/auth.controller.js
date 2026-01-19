@@ -3,12 +3,19 @@ import UserModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import transporter from "../db/nodemailer.js";
-import {EMAIL_VERIFY_TEMPLATE , PASSWORD_RESET_TEMPLATE} from '../db/emailTemplates.js'
+import { EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from '../db/emailTemplates.js';
+
+// ✅ Cross-site cookie settings
+const cookieOptions = {
+  httpOnly: true,
+  secure: true,       // must for HTTPS / VS Code Ports / mobile
+  sameSite: "none",   // cross-site safe
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+};
 
 // -------------------- REGISTER --------------------
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
-
   if (!name || !email || !password)
     return res.status(404).json({ message: "The user is not created", success: false });
 
@@ -21,12 +28,7 @@ export const register = async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-  res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,          // REQUIRED for sameSite: none
-  sameSite: "none",      // ✅ MUST
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-});
+    res.cookie("token", token, cookieOptions);
 
     await transporter.sendMail({
       from: `"DanceScript Team" <${process.env.SENDER_EMAIL}>`,
@@ -54,13 +56,7 @@ export const login = async (req, res) => {
     if (!isMatch) return res.json({ success: false, message: "Invalid password" });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-
-  res.cookie("token", token, {
-  httpOnly: true,
-  secure: false,          // REQUIRED for sameSite: none
-  sameSite: "lax",      // ✅ MUST
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-});
+    res.cookie("token", token, cookieOptions);
 
     return res.json({ success: true });
   } catch (error) {
@@ -71,12 +67,17 @@ export const login = async (req, res) => {
 // -------------------- LOGOUT --------------------
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("token", {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-    });
+    res.clearCookie("token", cookieOptions);
     return res.json({ success: true, message: "Logout successful" });
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};
+
+// -------------------- AUTH CHECK --------------------
+export const isAuthenticated = async (req, res) => {
+  try {
+    return res.json({ success: true });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
@@ -93,7 +94,7 @@ export const sendverifyotp = async (req, res) => {
     user.verifyotp = otp;
     user.verifyotpExprieAt = Date.now() + 24 * 60 * 60 * 1000;
     await user.save();
-
+    
     await transporter.sendMail({
       from: `"DanceScript Team" <${process.env.SENDER_EMAIL}>`,
       to: user.email,
@@ -108,14 +109,6 @@ export const sendverifyotp = async (req, res) => {
   }
 };
 
-//--------------------Aunthicated------------------//
-export const isAunthicated = async(req,res)=>{
-  try {
-    return res.json({success:true})
-  } catch (error) {
-     return res.json({success:false , message:error.message})
-  }
-}
 // -------------------- VERIFY EMAIL --------------------
 export const verifyEmail = async (req, res) => {
   const { otp } = req.body;
