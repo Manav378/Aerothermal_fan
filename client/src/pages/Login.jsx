@@ -14,40 +14,42 @@ const Login = () => {
   const navigate = useNavigate();
   const { backendUrl, setisLoggedin, getUserData } = useContext(Appcontent);
 
-  const onSubmitHandler = async (e) => {
-    e.preventDefault();
-    axios.defaults.withCredentials = true;
+const onSubmitHandler = async (e) => {
+  e.preventDefault();
+  axios.defaults.withCredentials = true;
 
-    try {
-      let url =
-        state === "sign-up"
-          ? `${backendUrl}/api/auth/register`
-          : `${backendUrl}/api/auth/login`;
+  const isSignup = state === "sign-up"; // capture current value
 
-      let payload =
-        state === "sign-up"
-          ? { name, email, password }
-          : { email, password };
+  try {
+    let url = isSignup
+      ? `${backendUrl}/api/auth/register`
+      : `${backendUrl}/api/auth/login`;
 
-      const { data } = await axios.post(url, payload);
+    let payload = isSignup
+      ? { name, email, password }
+      : { email, password };
 
-      if (data.success) {
-        setisLoggedin(true);
-        await getUserData();
-        state === "sign-up" ? navigate("/") : navigate("/dashboard")
-      
-        toast.success(
-          state === "sign-up"
-            ? "System Initialized Successfully ⚙️"
-            : "Access Granted 🚀"
-        );
-      } else {
-        toast.error(data.message || "Authentication Failed");
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Server Error ❌");
+    const { data } = await axios.post(url, payload);
+
+    if (data.success) {
+      setisLoggedin(true);
+      await getUserData();
+
+      // Navigate based on signup or login
+      navigate(isSignup ? "/dashboard" : "/dashboard"); // <-- can be same for now
+
+      toast.success(
+        isSignup
+          ? "System Initialized Successfully ⚙️"
+          : "Access Granted 🚀"
+      );
+    } else {
+      toast.error(data.message || "Authentication Failed");
     }
-  };
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Server Error ❌");
+  }
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 bg-linear-to-br from-slate-900 via-blue-950 to-slate-800 relative overflow-hidden">
