@@ -1,0 +1,28 @@
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Fan Icon -->
+  <g transform="translate(250 160)" fill="white">
+    <circle cx="0" cy="0" r="22"></circle>
+
+    <path d="M0 -90 C30 -80 45 -40 20 -20 Z"></path>
+    <path d="M90 0 C80 30 40 45 20 20 Z"></path>
+    <path d="M0 90 C-30 80 -45 40 -20 20 Z"></path>
+    <path d="M-90 0 C-80 -30 -40 -45 -20 -20 Z"></path>
+    <path d="M-40 -70 C-10 -90 10 -90 40 -70 C10 -60 -10 -60 -40 -70 Z"></path>
+  </g>
+
+  <!-- AEROFAN Text -->
+  <text x="250" y="300" text-anchor="middle" font-size="52" font-weight="700" fill="white" font-family="Poppins, Arial, sans-serif">
+    AEROFAN
+  </text>
+
+  <!-- Lines -->
+  <line x1="120" y1="320" x2="200" y2="320" stroke="white" stroke-width="2"></line>
+  <line x1="300" y1="320" x2="380" y2="320" stroke="white" stroke-width="2"></line>
+
+  <!-- TECH Text -->
+  <text x="250" y="350" text-anchor="middle" font-size="28" letter-spacing="4" fill="white" font-family="Poppins, Arial, sans-serif">
+    TECH
+  </text>
+
+</svg>
