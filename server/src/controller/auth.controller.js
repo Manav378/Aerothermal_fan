@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import UserModel from "../models/user.model.js";
+import UserModel from '../models/user.model.js'
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import transporter from "../db/nodemailer.js";

@@ -2,11 +2,11 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
-import conndb from "./db/db.js"
-import authrouter from './routes/auth.routes.js'
-import userrouter from './routes/user.routes.js'
-import  dashboardroute from './routes/dahboard.routes.js'
-import DeviceRouter from './routes/device.routes.js'
+import conndb from './src/db/db.js'
+import authrouter from '../server/src/routes/auth.routes.js'
+import userrouter from './src/routes/user.routes.js'
+import  dashboardroute from './src/routes/dahboard.routes.js'
+import DeviceRouter from './src/routes/device.routes.js'
 
 
 
