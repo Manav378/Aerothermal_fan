@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { assets } from "../assets/assets.js";
+import { assets } from "../temp/assets.js";
 import { Appcontent } from "../context/Appcontext.jsx";
 
 const Header = () => {

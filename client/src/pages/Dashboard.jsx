@@ -5,9 +5,9 @@ import { Appcontent } from "../context/Appcontext.jsx";
 // Components
 import TemperatureGauge from "../components/Temp.jsx";
 import RpmGauge from "../components/RpmCard.jsx";
-import PWMSliderCard from "../Components/pwm.jsx";
-import AutoModeCard from "../Components/automode.jsx";
-import CurrentPWMCard from "../components/currentpwm.jsx";
+import PWMSliderCard from "../components/pwm.jsx";
+import AutoModeCard from "../components/automode.jsx";
+import CurrentPWMCard from "../components/Currentpwm.jsx";
 
 const Dashboard = () => {
   const {
