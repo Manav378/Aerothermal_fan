@@ -14,7 +14,7 @@ import DeviceRouter from './src/routes/device.routes.js'
 console.log("server")
 dotenv.config();
 const app = express()
-const allowedOrigin  = ['http://localhost:5175']
+const allowedOrigin  = ['http://localhost:5175' , 'https://aerothermal-fanfronted.vercel.app']
 app.use(cors({origin:allowedOrigin,credentials:true}));
 
 const PORT  = process.env.PORT || 4000
