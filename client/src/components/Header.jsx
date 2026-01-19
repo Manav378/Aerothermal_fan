@@ -1,10 +1,13 @@
 import React, { useContext } from "react";
 import { assets } from "../temp/assets.js";
 import { Appcontent } from "../context/Appcontext.jsx";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const { userData } = useContext(Appcontent);
-
+  const navigate = useNavigate()
+  const { userData ,isLoggedin} = useContext(Appcontent);
+console.log(isLoggedin)
   return (
     <section
       className="
@@ -87,6 +90,9 @@ const Header = () => {
 
       {/* CTA */}
       <button
+      onClick={()=>{
+        isLoggedin === true ? navigate("/dashboard") : toast.info("Please Login/Signup!")
+      }}
         className="
           px-8 sm:px-12
           py-2.5 sm:py-3
