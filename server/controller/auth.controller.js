@@ -7,9 +7,9 @@ import { EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from '../db/emailTempl
 
 // ✅ Cross-site cookie settings
 const cookieOptions = {
-  httpOnly: true,
-  secure: true,       // must for HTTPS / VS Code Ports / mobile
-  sameSite: "none",   // cross-site safe
+  httpOnly:true,
+  secure:  process.env.NODE_ENV === 'production',       // must for HTTPS / VS Code Ports / mobile
+  sameSite:  process.env.NODE_ENV === 'production' ? 'none' : 'lax',   // cross-site safe
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 

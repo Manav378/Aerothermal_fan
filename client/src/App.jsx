@@ -59,7 +59,7 @@ const App = () => {
   return (
     <AppContextProvider>
       <AppLayout />
-      <ToastContainer position="top-center" theme="dark" autoClose={2000} />
+      <ToastContainer position="top-center" theme="dark" autoClose={2000}  style={{marginTop:"30px"}}/>
     </AppContextProvider>
   );
 };
