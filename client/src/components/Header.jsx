@@ -35,7 +35,7 @@ console.log(isLoggedin)
           className="
             w-24 h-24
             sm:w-32 sm:h-32
-            md:w-36 md:h-36
+            md:w-36 md:h-36 select-none
             rounded-full
             bg-[#020617]
           "
@@ -49,7 +49,7 @@ console.log(isLoggedin)
           text-cyan-200
           text-lg sm:text-2xl md:text-3xl
           font-medium
-          mb-1 sm:mb-2
+          mb-1 sm:mb-2 select-none
         "
       >
         Hey {userData?.name || "Developer"}
@@ -69,7 +69,7 @@ console.log(isLoggedin)
           font-bold
           mb-3 sm:mb-4
           bg-linear-to-r from-cyan-400 to-blue-500
-          text-transparent bg-clip-text
+          text-transparent bg-clip-text select-none
         "
       >
         Welcome to AeroFan Tech
@@ -81,7 +81,7 @@ console.log(isLoggedin)
           max-w-md sm:max-w-xl
           text-sm sm:text-base
           mb-8 sm:mb-10
-          text-cyan-100/80
+          text-cyan-100/80 select-none
         "
       >
         Let’s optimize airflow, thermal efficiency, and performance
@@ -93,7 +93,7 @@ console.log(isLoggedin)
       onClick={()=>{
         isLoggedin === true ? navigate("/dashboard") : toast.info("Please Login/Signup!")
       }}
-        className="
+        className=" cursor-pointer
           px-8 sm:px-12
           py-2.5 sm:py-3
           rounded-full
