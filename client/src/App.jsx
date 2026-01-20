@@ -13,12 +13,13 @@ import About from './pages/About.jsx';
 import Settings from './pages/Settings.jsx';
 import { useEffect } from 'react';
 import AddDevice from './pages/AddDevices.jsx';
+import WeeklyGraphPage from './pages/WeeklyGraphPage.jsx';
 
 
 const AppLayout = () => {
   const location = useLocation();
 
- const protectedRoutes = ["/dashboard", "/about", "/settings" , "/add-device"];
+ const protectedRoutes = ["/dashboard", "/about", "/settings" , "/add-device","/week-data"];
 const showSidebar = protectedRoutes.includes(location.pathname);
 
 useEffect(() => {
@@ -49,6 +50,7 @@ useEffect(() => {
           <Route path="/about" element={<About />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/add-device" element={<AddDevice />} />
+          <Route path="/week-data" element={<WeeklyGraphPage />} />
         </Routes>
       </main>
     </div>

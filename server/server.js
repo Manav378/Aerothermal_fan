@@ -7,7 +7,7 @@ import authrouter from '../server/src/routes/auth.routes.js'
 import userrouter from './src/routes/user.routes.js'
 import  dashboardroute from './src/routes/dahboard.routes.js'
 import DeviceRouter from './src/routes/device.routes.js'
-
+import Rawrouter from './src/routes/raw.routes.js'
 
 
 
@@ -37,6 +37,7 @@ app.get("/" , (req,res)=>{
     res.status(200).send("API working")
 })
 app.use('/api/dashboard', dashboardroute)
+app.use('/api/RawData', Rawrouter)
 app.use("/api/auth",authrouter)
 app.use("/api/device" , DeviceRouter)
 app.use("/api/user",userrouter)

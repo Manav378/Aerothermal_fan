@@ -55,6 +55,7 @@ export const getMyActiveDevice = async (req, res) => {
   res.json({
     success: true,
     device: {
+      _id: device._id,  
       deviceName: device.deviceName,
       temperature: device.temperature,
       rpm: device.rpm,
@@ -75,13 +76,13 @@ export const Adddevice = async (req, res) => {
   if (EnterdevicePass_Key !== device.devicePass_Key)
     return res.json({ success: false, message: "Wrong passkey" });
 
-  // 🔥 deactivate old devices
+
   await DeviceModels.updateMany(
     { user: userId },
     { $set: { isActive: false } }
   );
 
-  // 🔥 activate current device
+
   device.user = userId;
   device.isVerified = true;
   device.isActive = true;

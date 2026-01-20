@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Appcontent } from "../context/Appcontext";
 import axios from "axios";
-
+import { BarChart2 } from "lucide-react";
 const Sidebar = () => {
   const navigate = useNavigate();
   const { backendUrl, setuserData, setisLoggedin } = useContext(Appcontent);
@@ -93,7 +93,7 @@ const Sidebar = () => {
         </h1>
 
         {/* Nav */}
-        <nav className="flex flex-col gap-2 flex-1">
+        <nav className="flex flex-col select-none gap-2 flex-1">
           <NavLink
             to="/dashboard"
             className={({ isActive }) =>
@@ -112,6 +112,16 @@ const Sidebar = () => {
           >
             <Plus size={18} />
             Add Device
+          </NavLink>
+
+          <NavLink
+            to="/week-data"
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
+            <BarChart2 size={18} />
+            weekly Data
           </NavLink>
 
           <NavLink
@@ -146,7 +156,7 @@ const Sidebar = () => {
             hover:bg-slate-800
             dark:hover:bg-zinc-800
             rounded-md
-            transition
+            transition cursor-pointer
           "
         >
           <LogOut size={18} />

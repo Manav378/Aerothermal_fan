@@ -1,6 +1,6 @@
 
 import { getPWM, isAutoMode, setAutoMode,setPWM } from './pwmSliderController.js';
-
+import DeviceRawData from '../models/DeviceRawData.js';
 import DeviceModels from '../models/Device.model.js';
 
 
@@ -39,6 +39,15 @@ export const sensorController = async (req, res) => {
       device.lastSeen = new Date();
       await device.save();
     }
+
+
+    //RAW DATA SAVE (history)
+    await DeviceRawData.create({
+      device:device._id,
+      temperature,
+      rpm,
+      pwm
+    })
 
 
     res.status(200).json({
