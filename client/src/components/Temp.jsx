@@ -70,7 +70,7 @@ export default function TemperatureGauge({ value }) {
 
         {/* Center Text */}
         <div className="absolute top-8 sm:top-10 text-center">
-          <p className="text-xl sm:text-2xl font-semibold text-gray-700 dark:text-gray-100">
+          <p className="text-xl sm:text-2xl  select-none font-semibold text-gray-700 dark:text-gray-100">
             {safeTemp}
             <span className="text-sm">°C</span>
           </p>
@@ -90,7 +90,7 @@ export default function TemperatureGauge({ value }) {
       </div>
 
       {/* Min / Max */}
-      <div className="flex justify-between text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 px-2">
+      <div className="flex justify-between  select-none text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 px-2">
         <span>{min}</span>
         <span>{max}</span>
       </div>

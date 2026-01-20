@@ -79,7 +79,7 @@ const Sidebar = () => {
       >
         {/* Close Button (mobile) */}
         <div className="flex items-center justify-between mb-6 md:hidden">
-          <h1 className="text-lg font-semibold text-white tracking-wide">
+          <h1 className="text-lg font-semibold  select-none text-white tracking-wide">
             Control Panel
           </h1>
           <button onClick={() => setOpen(false)}>
@@ -88,7 +88,7 @@ const Sidebar = () => {
         </div>
 
         {/* Desktop Title */}
-        <h1 className="hidden md:block text-xl font-semibold text-white mb-8 text-center tracking-wide">
+        <h1 className="hidden md:block text-xl  select-none font-semibold text-white mb-8 text-center tracking-wide">
           Control Panel
         </h1>
 

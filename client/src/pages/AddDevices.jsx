@@ -98,20 +98,20 @@ const AddDevice = () => {
               }}
             >
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+                <h3 className="font-semibold  select-none text-gray-800 dark:text-gray-100">
                   {device.deviceName}
                 </h3>
                 <span
                   className={`h-3 w-3 rounded-full ${device.isOnline ? "bg-green-500" : "bg-red-500"}`}
                 />
               </div>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-2 text-sm  select-none text-gray-500 dark:text-gray-400">
                 Status:{" "}
                 <span className={`font-medium ${device.isOnline ? "text-green-600" : "text-red-600"}`}>
                   {device.isOnline ? "Online" : "Offline"}
                 </span>
               </p>
-              <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+              <p className="mt-1 text-xs  select-none text-gray-400 dark:text-gray-500">
                 Last Seen: {new Date(device.lastSeen).toLocaleString()}
               </p>
             </div>

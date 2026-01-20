@@ -22,12 +22,12 @@ const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
       "
     >
       {/* Title */}
-      <p className="text-xs text-gray-400 dark:text-gray-500 mb-2">
+      <p className="text-xs text-gray-400  select-none dark:text-gray-500 mb-2">
         PWM CONTROL
       </p>
 
       {/* Percentage */}
-      <p className="text-base sm:text-lg font-semibold text-center text-emerald-600 mb-2">
+      <p className="text-base sm:text-lg  select-none font-semibold text-center text-emerald-600 mb-2">
         {percent}%
       </p>
 
@@ -71,13 +71,13 @@ const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
           +
         </button>
 
-        <span className="text-gray-500 dark:text-gray-400 text-sm w-10 text-right">
+        <span className="text-gray-500  select-none dark:text-gray-400 text-sm w-10 text-right">
           {value}
         </span>
       </div>
 
       {/* Min / Max */}
-      <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mt-2">
+      <div className="flex  select-none justify-between text-xs text-gray-400 dark:text-gray-500 mt-2">
         <span>0</span>
         <span>255</span>
       </div>

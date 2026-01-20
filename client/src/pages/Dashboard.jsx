@@ -69,11 +69,11 @@ const Dashboard = () => {
       
       {/* HEADER */}
       <div className="mb-8 flex flex-col gap-3">
-        <h1 className="text-2xl sm:text-3xl font-bold">Device Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl  select-none font-bold">Device Dashboard</h1>
 
         <div className="flex flex-wrap items-center gap-3">
           {/* Device Name */}
-          <span className="px-4 py-1 rounded-full text-sm font-medium bg-zinc-200 dark:bg-zinc-800">
+          <span className="px-4 py-1 rounded-full text-sm  select-none font-medium bg-zinc-200 dark:bg-zinc-800">
             Device:{" "}
             {IsOnlineDeviceData?.isOnline ? (
               <span>{IsOnlineDeviceData.deviceName} 😎</span>
@@ -84,7 +84,7 @@ const Dashboard = () => {
 
           {/* Online / Offline */}
           <span
-            className={`px-3 py-1 rounded-full text-sm font-semibold ${
+            className={`px-3 py-1 rounded-full  select-none text-sm font-semibold ${
               IsOnlineDeviceData?.isOnline
                 ? "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
                 : "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { assets } from "../temp/assets.js";
+import { assets } from "../temp/assets.js"; 
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Appcontent } from "../context/Appcontext.jsx";
@@ -92,7 +92,7 @@ const onSubmitNewPassword = async(e) => {
   return (
     <div
       className=" flex items-center justify-center min-h-screen
-     px-6 sm:px-0 bg-linear-to-br from-blue-200 to-purple-400"
+     px-6 sm:px-0 bg-linear-to-br from-blue-200 to-purple-400  select-none"
     >
       <img
         src={assets.aero}

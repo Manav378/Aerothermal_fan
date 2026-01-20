@@ -27,7 +27,7 @@ const About = () => {
           text-2xl sm:text-3xl
           font-bold
           mb-4
-          text-center
+          text-center  select-none
         "
       >
         About the ESP32 Smart Fan Controller
@@ -35,10 +35,10 @@ const About = () => {
 
       {/* Section */}
       <section className="mb-6">
-        <h2 className="text-lg sm:text-xl font-semibold mb-2">
+        <h2 className="text-lg sm:text-xl  select-none font-semibold mb-2">
           Project Overview
         </h2>
-        <p className="text-sm sm:text-base leading-relaxed">
+        <p className="text-sm sm:text-base  select-none leading-relaxed">
           The ESP32 Smart Fan Controller is an IoT-enabled thermal management
           system designed to provide automated, precise, and energy-efficient
           fan control. Unlike traditional manual fan systems, this prototype
@@ -49,10 +49,10 @@ const About = () => {
 
       {/* Section */}
       <section className="mb-6">
-        <h2 className="text-lg sm:text-xl font-semibold mb-2">
+        <h2 className="text-lg sm:text-xl  select-none font-semibold mb-2">
           Team Members
         </h2>
-        <p className="text-sm sm:text-base leading-relaxed">
+        <p className="text-sm sm:text-base  select-none leading-relaxed">
           This project was developed by a team of six Electronics and Communication
           Engineering students from Government Engineering College, Gandhinagar,
           under the guidance of Prof. R.D. Mehta. Each member contributed expertise
@@ -63,10 +63,10 @@ const About = () => {
 
       {/* Section */}
       <section className="mb-6">
-        <h2 className="text-lg sm:text-xl font-semibold mb-2">
+        <h2 className="text-lg sm:text-xl  select-none font-semibold mb-2">
           Key Features
         </h2>
-        <ul className="list-disc list-inside text-sm sm:text-base space-y-1">
+        <ul className="list-disc list-inside  select-none text-sm sm:text-base space-y-1">
           <li>Automatic temperature-based fan control using PWM with 4 operating zones.</li>
           <li>Multi-method RPM detection ensuring compatibility with various fan types.</li>
           <li>Local OLED display showing temperature, RPM, and mode status.</li>
@@ -77,10 +77,10 @@ const About = () => {
 
       {/* Section */}
       <section className="mb-6">
-        <h2 className="text-lg sm:text-xl font-semibold mb-2">
+        <h2 className="text-lg sm:text-xl  select-none font-semibold mb-2">
           Design Approach
         </h2>
-        <p className="text-sm sm:text-base leading-relaxed">
+        <p className="text-sm sm:text-base  select-none leading-relaxed">
           The project follows a human-centered Design Thinking methodology.
           We focused on understanding user needs, rapid prototyping, and
           iterative testing. Emphasis was placed on transparency, intuitive
@@ -91,10 +91,10 @@ const About = () => {
 
       {/* Section */}
       <section>
-        <h2 className="text-lg sm:text-xl font-semibold mb-2">
+        <h2 className="text-lg sm:text-xl  select-none font-semibold mb-2">
           Impact and Future Scope
         </h2>
-        <p className="text-sm sm:text-base leading-relaxed">
+        <p className="text-sm sm:text-base  select-none leading-relaxed">
           The ESP32 Smart Fan Controller improves comfort in shared indoor
           environments, reduces energy consumption, and provides users with
           transparent control over their environment. Future enhancements

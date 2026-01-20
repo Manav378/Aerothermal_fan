@@ -55,7 +55,7 @@ console.log("Response received:", data);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-6 bg-linear-to-br from-slate-900 via-blue-950 to-slate-800 relative overflow-hidden">
+    <div className="flex items-center justify-center min-h-screen  select-none px-6 bg-linear-to-br from-slate-900 via-blue-950 to-slate-800 relative overflow-hidden">
       
       {/* airflow glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.15),transparent_60%)]"></div>

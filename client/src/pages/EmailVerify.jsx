@@ -77,11 +77,11 @@ const EmailVerify = () => {
         onSubmit={handleSubmit}
         className="relative z-10 w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-sky-800/40 p-6 sm:p-8 rounded-2xl shadow-[0_0_40px_rgba(56,189,248,0.15)] transition-colors duration-300"
       >
-        <h1 className="text-center text-2xl sm:text-3xl font-bold text-sky-300 mb-3 tracking-wide">
+        <h1 className="text-center text-2xl sm:text-3xl  select-none font-bold text-sky-300 mb-3 tracking-wide">
           Email Verification
         </h1>
 
-        <p className="text-center mb-6 text-sky-400 text-xs sm:text-sm">
+        <p className="text-center mb-6 text-sky-400  select-none text-xs sm:text-sm">
           Enter the 6-digit OTP to activate the aerothermal control system
         </p>
 
@@ -118,7 +118,7 @@ const EmailVerify = () => {
             bg-linear-to-r from-sky-500 to-cyan-700
             text-white font-semibold tracking-wide
             hover:shadow-[0_0_20px_rgba(56,189,248,0.5)]
-            transition-all
+            transition-all  select-none
           "
         >
           Verify & Activate System

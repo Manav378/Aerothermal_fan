@@ -12,19 +12,19 @@ const Settings = () => {
   }else{
     document.documentElement.classList.remove("dark");
     localStorage.setItem("theme" , "light");
-  }
+  }  select-none
  
  }, [dark]);
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+      <h1 className="text-2xl font-bold mb-6 text-gray-900  select-none dark:text-gray-100">
         Settings Preferences
       </h1>
 
       {/* Theme Section */}
       <div className="p-4 bg-gray-100 dark:bg-zinc-800 rounded-md flex items-center justify-between">
-        <span className="font-medium text-gray-900 dark:text-gray-100">
+        <span className="font-medium text-gray-900 dark:text-gray-100  select-none">
           Theme
         </span>
         <button
@@ -43,7 +43,7 @@ const Settings = () => {
               bg-white
               flex items-center justify-center
               text-xs
-              transition-transform duration-300
+              transition-transform duration-300  select-none
               ${dark ? "translate-x-6" : "translate-x-0"}
             `}
           >
