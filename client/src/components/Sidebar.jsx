@@ -18,7 +18,7 @@ const Sidebar = () => {
   const [open, setOpen] = useState(false);
 
   const logout = async () => {
-    await axios.post(backendUrl + "/api/auth/logout");
+    await axios.post(backendUrl + "/api/auth/logout",  { withCredentials: true });
     setisLoggedin(false);
     setuserData(false);
     navigate("/");
