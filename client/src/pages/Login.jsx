@@ -4,20 +4,22 @@ import { useNavigate } from "react-router-dom";
 import { Appcontent } from "../context/Appcontext.jsx";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
+
 
 const Login = () => {
   const [state, setstate] = useState("sign-up");
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
-
+const [loading, setloading] = useState(false);
   const navigate = useNavigate();
   const { backendUrl, setisLoggedin, getUserData } = useContext(Appcontent);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     axios.defaults.withCredentials = true;
-
+     setloading(true);
     try {
       let url =
         state === "sign-up"
@@ -32,6 +34,7 @@ const Login = () => {
       const { data } = await axios.post(url, payload);
 console.log("Response received:", data);
       if (data.success) {
+        
         setisLoggedin(true);
         await getUserData();
         state === "sign-up" ? navigate("/") : navigate("/dashboard")
@@ -46,6 +49,8 @@ console.log("Response received:", data);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Server Error ❌");
+    }finally{
+      setloading(false);
     }
   };
 
@@ -121,8 +126,12 @@ console.log("Response received:", data);
             Reset Access Credentials?
           </p>
 
-          <button className="w-full py-3 rounded-xl bg-linear-to-r cursor-pointer from-sky-500 to-cyan-700 text-white font-semibold tracking-wide hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] transition">
-            {state === "sign-up" ? "Initialize System" : "Enter Control Panel"}
+          <button disabled={loading} className={`w-full py-3 ${loading ? "cursor-not-allowed bg-linear-to-r  from-sky-500 to-cyan-700" : "bg-linear-to-r cursor-pointer from-sky-500 to-cyan-700"} rounded-xl  text-white font-semibold tracking-wide hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] transition`}>
+       
+            {loading ? 
+            <>
+            <Loader2  className="w-5 h-5 animate-spin m-auto"/>
+            </> : state === "sign-up" ? "Initialize System" : "Enter Control Panel"}
           </button>
         </form>
 
