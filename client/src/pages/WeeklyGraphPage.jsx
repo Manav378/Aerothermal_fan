@@ -34,6 +34,7 @@ const WeeklyGraphPage = () => {
 
       // Agar device object exist kare
       if (!IsOnlineDeviceData?._id) {
+        // Agar device object hi nahi hai → fallback dummy
         setData(dummyData);
         setLoading(false);
         return;
@@ -45,10 +46,12 @@ const WeeklyGraphPage = () => {
           `${backendUrl}/api/RawData/${IsOnlineDeviceData._id}/raw-weekly`
         );
 
-        // Backend data mapping
-        const last7 = res.data.slice(-7); // last 7 entries
+        // Last 7 entries ko map karo chart ke liye
+        const last7 = res.data.slice(-7); // backend se last 7 data
         const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+        // Agar backend me data hai → map karo
+        // Agar data empty hai → fallback current device values
         const chartData =
           last7.length > 0
             ? last7.map((item, index) => ({
@@ -57,12 +60,25 @@ const WeeklyGraphPage = () => {
                 rpm: item.rpm,
                 pwm: item.pwm,
               }))
-            : dummyData;
+            : days.map((day) => ({
+                day,
+                temperature: IsOnlineDeviceData.temperature,
+                rpm: IsOnlineDeviceData.rpm,
+                pwm: IsOnlineDeviceData.pwm,
+              }));
 
         setData(chartData);
       } catch (err) {
         console.log("Weekly data fetch error:", err.response?.data || err.message);
-        setData(dummyData);
+
+        // Error case me bhi last known device values show karo
+        const fallbackData = days.map((day) => ({
+          day,
+          temperature: IsOnlineDeviceData.temperature,
+          rpm: IsOnlineDeviceData.rpm,
+          pwm: IsOnlineDeviceData.pwm,
+        }));
+        setData(fallbackData);
       }
 
       setLoading(false);
@@ -78,8 +94,8 @@ const WeeklyGraphPage = () => {
       {/* Device name display */}
       {IsOnlineDeviceData && (
         <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">
-          Weekly Data for: {IsOnlineDeviceData.deviceName}
-          {IsOnlineDeviceData.isOnline ? " (Online)" : " (Offline)"}
+          Weekly Data for: {IsOnlineDeviceData.deviceName}{" "}
+          {IsOnlineDeviceData.isOnline ? "(Online)" : "(Offline)"}
         </h2>
       )}
 

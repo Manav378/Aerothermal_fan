@@ -1,15 +1,15 @@
-import mongoose  from "mongoose";
+// models/RawData.js
+import mongoose from "mongoose";
 
-
-const deviceRawDataSchema = new mongoose.Schema({
-
-     device: { type: mongoose.Schema.Types.ObjectId, ref: "Device" },
+const RawDataSchema = new mongoose.Schema({
+  deviceId: { type: mongoose.Schema.Types.ObjectId, ref: "Device" },
   temperature: Number,
   rpm: Number,
-  fanSpeed: Number,
   pwm: Number,
-  createdAt: { type: Date, default: Date.now }
-})
+  timestamp: { type: Date, default: Date.now, index: true }
+});
 
 
-export default mongoose.model("DeviceRawData" , deviceRawDataSchema);
+RawDataSchema.index({ timestamp: 1 }, { expireAfterSeconds: 86400 });
+
+export default mongoose.model("RawData", RawDataSchema);

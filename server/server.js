@@ -8,6 +8,8 @@ import userrouter from './src/routes/user.routes.js'
 import  dashboardroute from './src/routes/dahboard.routes.js'
 import DeviceRouter from './src/routes/device.routes.js'
 import Rawrouter from './src/routes/raw.routes.js'
+import { aggregateWeeklyData } from './src/controller/weeklyController.js'
+
 
 
 
@@ -24,7 +26,8 @@ app.use(cors({
   credentials: true
 }));
 
-
+// daily 24 hours me run karne ke liye
+setInterval(aggregateWeeklyData, 24*60*60*1000);
 
 
 const PORT  = process.env.PORT || 4000
