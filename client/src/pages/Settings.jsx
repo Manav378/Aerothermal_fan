@@ -12,7 +12,7 @@ const Settings = () => {
   }else{
     document.documentElement.classList.remove("dark");
     localStorage.setItem("theme" , "light");
-  }  select-none
+  }  
  
  }, [dark]);
 
