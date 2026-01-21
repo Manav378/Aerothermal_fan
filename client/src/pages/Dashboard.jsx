@@ -28,10 +28,10 @@ const debouncedPwm = useDebounce(pwmSlider, 300);
   // Load assigned device
 useEffect(() => {
   
- const Interval = setInterval(() => {
+ 
   fetchMyDevice()
- }, 2000);
- return(()=>clearInterval(Interval))
+ 
+
 }, []);
 
 

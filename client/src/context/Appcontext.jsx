@@ -33,9 +33,9 @@ const [autoMode, setAutoMode] = useState(null);
         settemperature(data.device.temperature);
         setkey(data.device.devicePass_Key)
         setrpm(data.device.rpm);
-        setPwmSlider(data.device.pwmValue);
-      setAutoMode(data.device.autoMode);
-        setpwm(data.device.pwm);
+        setAutoMode(data.device.autoMode);
+          setpwm(data.device.pwm);
+    
       } else {
         setIsOnlineDeviceData(null);
         settemperature(0);
