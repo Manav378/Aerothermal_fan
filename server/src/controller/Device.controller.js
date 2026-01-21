@@ -56,10 +56,13 @@ export const getMyActiveDevice = async (req, res) => {
     success: true,
     device: {
       _id: device._id,  
+      devicePass_Key:device.devicePass_Key,
       deviceName: device.deviceName,
       temperature: device.temperature,
       rpm: device.rpm,
       pwm: device.pwm,
+    pwmValue: device.pwmValue,
+    autoMode: device.autoMode,
       isOnline
     }
   });

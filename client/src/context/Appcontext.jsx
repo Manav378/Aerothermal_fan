@@ -18,41 +18,59 @@ export const AppContextProvider = (props) => {
   const [rpm, setrpm] = useState(0);
   const [pwm, setpwm] = useState(0);
   const [IsOnlineDeviceData, setIsOnlineDeviceData] = useState(null);
+  const [key, setkey] = useState('');
+const [pwmSlider, setPwmSlider] = useState(null);
+const [autoMode, setAutoMode] = useState(null);
 
 
 
-
-const fetchMyDevice = async () => {
-  try {
-    const { data } = await axios.get(`${backendUrl}/api/device/my-device`);
-    if (data.success) {
-      setIsOnlineDeviceData(data.device);
-      settemperature(data.device.temperature);
-      setrpm(data.device.rpm);
-      setpwm(data.device.pwm);
-    } else {
+  const fetchMyDevice = async () => {
+    try {
+      const { data } = await axios.get(`${backendUrl}/api/device/my-device`);
+      if (data.success) {
+        console.log(data)
+        setIsOnlineDeviceData(data.device);
+        settemperature(data.device.temperature);
+        setkey(data.device.devicePass_Key)
+        setrpm(data.device.rpm);
+        setPwmSlider(data.device.pwmValue);
+      setAutoMode(data.device.autoMode);
+        setpwm(data.device.pwm);
+      } else {
+        setIsOnlineDeviceData(null);
+        settemperature(0);
+        setrpm(0);
+        setpwm(0);
+      }
+    } catch (err) {
       setIsOnlineDeviceData(null);
       settemperature(0);
       setrpm(0);
       setpwm(0);
     }
-  } catch (err) {
-    setIsOnlineDeviceData(null);
-    settemperature(0);
-    setrpm(0);
-    setpwm(0);
-  }
-};
+  };
+
+
+  
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 
 
 
+  useEffect(() => {
+    axios.defaults.withCredentials = true;
+    getAuthstate();
 
-useEffect(() => {
-  axios.defaults.withCredentials = true;
-  getAuthstate();
- 
-}, []);
+  }, []);
 
 
 
@@ -83,10 +101,10 @@ useEffect(() => {
 
 
 
-  
 
 
- 
+
+
 
 
   useEffect(() => {
@@ -122,8 +140,9 @@ useEffect(() => {
     isLoggedin, setisLoggedin,
     userData, setuserData,
     getUserData, temprature, rpm,
-    pwm,setIsOnlineDeviceData,IsOnlineDeviceData,
-    settemperature,setrpm,setpwm,fetchMyDevice
+    pwm, setIsOnlineDeviceData, IsOnlineDeviceData,
+    settemperature, setrpm, setpwm, fetchMyDevice, key,
+     pwmSlider,setPwmSlider,autoMode,setAutoMode,useDebounce
   }
 
 

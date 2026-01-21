@@ -19,34 +19,53 @@ const Dashboard = () => {
     settemperature,
     setrpm,
     setpwm,
-    fetchMyDevice,
+    fetchMyDevice,key, pwmSlider, setPwmSlider,autoMode,
+setAutoMode,useDebounce
   } = useContext(Appcontent);
 
-  const [value, setvalue] = useState(126);
-  const [autoMode, setAutoMode] = useState(false);
 
+const debouncedPwm = useDebounce(pwmSlider, 300);
   // Load assigned device
-  useEffect(() => {
-    fetchMyDevice();
-  }, []);
+useEffect(() => {
+  
+ const Interval = setInterval(() => {
+  fetchMyDevice()
+ }, 2000);
+ return(()=>clearInterval(Interval))
+}, []);
+
 
   // Update PWM live if not auto mode
   useEffect(() => {
-    if (!backendUrl || autoMode) return;
+    if (!backendUrl || autoMode || !key) return;
     const sendpwm = async () => {
       try {
-        await axios.post(`${backendUrl}/api/dashboard/pwm`, { duty: value });
+      const res =   await axios.post(`${backendUrl}/api/dashboard/pwm/${key}`, { duty: debouncedPwm });
+        
       } catch (error) {
         console.log(error);
       }
     };
-    sendpwm();
-  }, [value, autoMode, backendUrl]);
+  if (debouncedPwm !== null) sendpwm();
+  }, [key, autoMode, backendUrl,debouncedPwm]);
 
   // Auto mode toggle
   useEffect(() => {
-    if (!backendUrl) return;
-    axios.post(`${backendUrl}/api/dashboard/auto`, { enabled: autoMode });
+   const sendauto = async()=>{
+    if(!backendUrl || !key) return
+    try {
+      const res = await axios.post(backendUrl+`/api/dashboard/auto/${key}` , {enabled:autoMode})
+      setAutoMode(res.data.autoMode)
+
+       if (!res.data.autoMode && res.data.pwmValue !== undefined) {
+        setPwmSlider(res.data.pwmValue);
+      }
+    } catch (error) {
+      console.log(error)
+      
+    }
+   }
+   sendauto()
   }, [autoMode, backendUrl]);
 
   // Update live device data
@@ -115,7 +134,7 @@ const Dashboard = () => {
 
         {/* PWM Slider */}
         <div className="w-full bg-white dark:bg-zinc-800 p-4 sm:p-5 rounded-2xl shadow transition-colors duration-300">
-          <PWMSliderCard value={value} setValue={setvalue} disabled={autoMode} />
+          <PWMSliderCard value={pwmSlider} setValue={setPwmSlider} disabled={autoMode} />
         </div>
 
         {/* Auto Mode */}

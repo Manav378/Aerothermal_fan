@@ -51,7 +51,7 @@ const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
           type="range"
           min={MIN}
           max={MAX}
-          value={value}
+       value={value ?? 0} 
           disabled={disabled}
           onChange={(e) => setValue(Number(e.target.value))}
           className="flex-1 accent-emerald-500"

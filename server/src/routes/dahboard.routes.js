@@ -7,8 +7,8 @@ const router = express.Router();
 router.post('/sensor', sensorController);
 
 
-router.post("/pwm", pwmSliderController);
-router.post("/auto", autoModeController);
+router.post("/pwm/:devicekey", pwmSliderController);
+router.post("/auto/:devicekey", autoModeController);
 router.get("/pwm-status", pwmStatusController);
 
 export default router;

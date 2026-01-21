@@ -69,8 +69,10 @@ export const sensorController = async (req, res) => {
 
 
 
-export const pwmSliderController = (req, res) => {
+export const pwmSliderController = async(req, res) => {
   const { duty } = req.body;
+  console.log(duty);
+  const {devicekey} = req.params
 
   if (isAutoMode())
     return res.json({ ignored: "Auto mode ON" });
@@ -78,14 +80,29 @@ export const pwmSliderController = (req, res) => {
   if (duty < 80 || duty > 255)
     return res.status(400).json({ error: "Invalid PWM" });
 
+  const device = await DeviceModels.findOne({devicePass_Key:devicekey})
+
+  if(!device) return res.status(404).json({success:false,message:"device not found"});
+ 
+  device.pwmValue = duty;
+  await device.save();
+
+
   setPWM(duty);
-  res.json({ success: true });
+  res.json({ success: true  , message:duty});
 };
 
-export const autoModeController = (req, res) => {
+export const autoModeController = async(req, res) => {
   const { enabled } = req.body;
+  const {devicekey} = req.params
+
+  const device = await DeviceModels.findOne({devicePass_Key:devicekey});
+  if(!device) return res.status(404).json({success:false , message:"device not found!"});
+
+  device.autoMode = enabled
+  await device.save();
   setAutoMode(enabled);
-  res.json({ autoMode: enabled });
+  res.json({success:true ,  autoMode: enabled , pwmValue: device.pwmValue, });
 };
 
 

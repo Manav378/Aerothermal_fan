@@ -8,6 +8,8 @@ const DeviceSchema = new mongoose.Schema({
     temperature:Number,
     rpm:Number,
     pwm:Number,
+    pwmValue:{type:Number , default:126},
+    autoMode:{type:Boolean , default:false},
     user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user"
