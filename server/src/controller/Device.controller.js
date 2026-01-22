@@ -96,14 +96,14 @@ export const Adddevice = async (req, res) => {
 
   // 5️⃣ Deactivate all other devices of this user
   await DeviceModels.updateMany(
-    { users: userId },
+    { user: userId },
     { $set: { isActive: false } }
   );
 
   // 6️⃣ Update device info for this user
   device.isVerified = true;
   device.isActive = true;
-  device.lastSeen = new Date();
+  // device.lastSeen = new Date();
 
   await device.save();
 

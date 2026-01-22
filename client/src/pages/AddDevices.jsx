@@ -7,30 +7,23 @@ import { useNavigate } from "react-router-dom";
 const AddDevice = () => {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDeviceId, setSelectedDeviceId] = useState("");
-  const [enterdevice, setenterdevice] = useState("");
+  const [passKey, setPassKey] = useState("");
   const [connecting, setConnecting] = useState(false);
 
-  const { backendUrl, setIsOnlineDeviceData } = useContext(Appcontent);
+  const { backendUrl } = useContext(Appcontent);
   const navigate = useNavigate();
 
-  // Fetch devices from backend
+  // 🔹 Fetch already added devices
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const res = await axios.get(`${backendUrl}/api/device`,{withCredentials:true});
-        if (res.data && Array.isArray(res.data.data)) {
-          setDevices(res.data.data);
-        } else {
-          setDevices([]);
-          console.warn("API returned unexpected format:", res.data);
-        }
+        const res = await axios.get(`${backendUrl}/api/device`, {
+          withCredentials: true,
+        });
+        setDevices(res.data?.data || []);
       } catch (err) {
-        console.error("Failed to fetch devices", err);
-        setError("Failed to load devices.");
+        console.error(err);
         setDevices([]);
       } finally {
         setLoading(false);
@@ -40,23 +33,26 @@ const AddDevice = () => {
     fetchDevices();
   }, [backendUrl]);
 
-  // Connect device handler
-  const handleConnectDevice = async () => {
-    if (!selectedDeviceId || !enterdevice) return;
+  // 🔹 Add device using passkey
+  const handleAddDevice = async () => {
+    if (!passKey) return;
 
     try {
       setConnecting(true);
-      const res = await axios.post(`${backendUrl}/api/device/add`, {
-        devicePass_Key: selectedDeviceId,
-        EnterdevicePass_Key: enterdevice,
-      });
+      const res = await axios.post(
+        `${backendUrl}/api/device/add`,
+        {
+          devicePass_Key: passKey,
+          EnterdevicePass_Key: passKey,
+        },
+        { withCredentials: true }
+      );
 
       if (res.data.success) {
-        setIsOnlineDeviceData(res.data.device);
-        toast.success("Device connected!");
+        toast.success("Device added successfully");
         navigate("/dashboard");
       } else {
-        toast.error(res.data.message);
+        toast.error(res.data.message || "Failed to add device");
       }
     } catch (err) {
       toast.error("Failed to connect device");
@@ -65,89 +61,73 @@ const AddDevice = () => {
     }
   };
 
-  if (loading) return <p className="p-6 text-gray-500 dark:text-gray-400">Loading devices...</p>;
-  if (error) return <p className="p-6 text-red-500">{error}</p>;
-
   return (
     <div className="p-4 sm:p-6">
-      <h2 className="mb-4 text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">My Devices</h2>
+      <h2 className="text-2xl font-bold mb-6">Add Device</h2>
 
-      {devices.length === 0 ? (
-        <p className="text-gray-500 dark:text-gray-400">No devices available</p>
+      {/* 🔹 ADD DEVICE FORM */}
+      <div className="max-w-sm mb-10">
+        <label className="block mb-2 text-sm font-medium">
+          Device Pass Key
+        </label>
+        <input
+          type="text"
+          placeholder="Enter device pass key"
+          value={passKey}
+          onChange={(e) => setPassKey(e.target.value)}
+          className="w-full border rounded px-3 py-2 mb-3"
+        />
+        <button
+          onClick={handleAddDevice}
+          disabled={!passKey || connecting}
+          className="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-50"
+        >
+          {connecting ? "Connecting..." : "Add Device"}
+        </button>
+        <p className="mt-2 text-xs text-gray-500">
+          Enter the pass key provided with your ESP32 device.
+        </p>
+      </div>
+
+      {/* 🔹 MY DEVICES LIST */}
+      <h3 className="text-xl font-semibold mb-4">My Devices</h3>
+
+      {loading ? (
+        <p className="text-gray-500">Loading devices...</p>
+      ) : devices.length === 0 ? (
+        <p className="text-gray-500">
+          No devices available. Add a device using its pass key.
+        </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {devices.map((device) => (
             <div
               key={device._id}
-              className="
-                cursor-pointer
-                rounded-xl
-                border border-gray-200 dark:border-gray-700
-                bg-white dark:bg-zinc-800
-                p-4
-                hover:shadow-lg
-                transition
-              "
-              onClick={() => {
-                if (!device.isOnline) {
-                  toast.error("Cannot connect an offline device");
-                  return;
-                }
-                setSelectedDeviceId(device.devicePass_Key);
-                setIsModalOpen(true);
-              }}
+              className="rounded-xl border p-4 bg-white shadow-sm"
             >
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold  select-none text-gray-800 dark:text-gray-100">
-                  {device.deviceName}
-                </h3>
+              <div className="flex justify-between items-center">
+                <h4 className="font-semibold">{device.deviceName}</h4>
                 <span
-                  className={`h-3 w-3 rounded-full ${device.isOnline ? "bg-green-500" : "bg-red-500"}`}
+                  className={`h-3 w-3 rounded-full ${
+                    device.isOnline ? "bg-green-500" : "bg-red-500"
+                  }`}
                 />
               </div>
-              <p className="mt-2 text-sm  select-none text-gray-500 dark:text-gray-400">
+              <p className="text-sm mt-2">
                 Status:{" "}
-                <span className={`font-medium ${device.isOnline ? "text-green-600" : "text-red-600"}`}>
+                <span
+                  className={
+                    device.isOnline ? "text-green-600" : "text-red-600"
+                  }
+                >
                   {device.isOnline ? "Online" : "Offline"}
                 </span>
               </p>
-              <p className="mt-1 text-xs  select-none text-gray-400 dark:text-gray-500">
+              <p className="text-xs text-gray-500 mt-1">
                 Last Seen: {new Date(device.lastSeen).toLocaleString()}
               </p>
             </div>
           ))}
-        </div>
-      )}
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white dark:bg-zinc-800 rounded-xl p-6 w-72 sm:w-80 relative shadow-lg transition-colors duration-300">
-            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Connect Device</h3>
-            <input
-              type="text"
-              placeholder="Enter Device ID"
-              value={enterdevice}
-              onChange={(e) => setenterdevice(e.target.value)}
-              className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 mb-4 bg-white dark:bg-zinc-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                className="px-4 py-2 rounded border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-zinc-700 transition"
-                onClick={() => setIsModalOpen(false)}
-                disabled={connecting}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50"
-                onClick={handleConnectDevice}
-                disabled={connecting || !selectedDeviceId || !enterdevice}
-              >
-                {connecting ? "Connecting..." : "Connect"}
-              </button>
-            </div>
-          </div>
         </div>
       )}
     </div>
