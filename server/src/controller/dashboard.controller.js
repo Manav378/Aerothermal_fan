@@ -88,19 +88,15 @@ export const pwmSliderController = async (req, res) => {
     return res.status(404).json({ success: false });
   }
 
+  if (device.autoMode) {
+    return res.json({ ignored: "Auto mode ON" });
+  }
 
   device.pwmValue = duty;
   await device.save();
 
-   res.json({
-    success: true,
-    autoMode: device.autoMode,
-    manualPWM: device.pwmValue
-  });
+  res.json({ success: true, pwm: duty });
 };
-
-
-
 export const autoModeController = async (req, res) => {
   const { enabled } = req.body;
   const { devicekey } = req.params;
@@ -119,19 +115,17 @@ export const autoModeController = async (req, res) => {
 
   res.json({
     success: true,
-    autoMode: device.autoMode,
-    manualPWM: device.pwmValue
+    autoMode: enabled,
+    pwmValue: device.pwmValue
   });
 };
 
 
 
 export const pwmStatusController = async (req, res) => {
-  const { devicekey } = req.params;
+  const { devicekey } = req.query;
 
-  const device = await DeviceModels.findOne({
-    devicePass_Key: devicekey
-  });
+  const device = await DeviceModels.findOne({ devicePass_Key: devicekey });
 
   if (!device) {
     return res.status(404).json({ success: false });
