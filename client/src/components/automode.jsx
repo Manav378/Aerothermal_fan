@@ -33,7 +33,7 @@ const AutoModeCard = ({ autoMode, setAutoMode }) => {
           sm:w-11 sm:h-6
           rounded-full
           relative
-          transition-colors
+          transition-colors cursor-pointer
           duration-300
           ${autoMode ? "bg-blue-500" : "bg-gray-300 dark:bg-gray-600"}
         `}
