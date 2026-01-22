@@ -86,6 +86,8 @@ export const Adddevice = async (req, res) => {
     return res.json({ success: false, message: "Wrong passkey" });
   }
 
+ 
+
   // 3️⃣ Initialize users array if not present
   if (!device.user) device.user = [];
 
@@ -103,7 +105,7 @@ export const Adddevice = async (req, res) => {
   // 6️⃣ Update device info for this user
   device.isVerified = true;
   device.isActive = true;
-  // device.lastSeen = new Date();
+
 
   await device.save();
 
