@@ -10,12 +10,12 @@ const DeviceSchema = new mongoose.Schema({
     pwm:Number,
     pwmValue:{type:Number , default:126},
     autoMode:{type:Boolean , default:false},
- user: {
+ user:[ {
   type: mongoose.Schema.Types.ObjectId,
   ref: "user",
   default: null ,
   index: true
-},
+}],
    isVerified: { type: Boolean, default: false },
    isActive: {
   type: Boolean,

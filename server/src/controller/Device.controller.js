@@ -70,37 +70,44 @@ export const getMyActiveDevice = async (req, res) => {
   });
 };
 
-
 export const Adddevice = async (req, res) => {
   const { devicePass_Key, EnterdevicePass_Key } = req.body;
   const userId = req.UserId;
-  console.log(userId)
+  console.log("Current User ID:", userId);
 
+  // 1️⃣ Find the device by passkey
   const device = await DeviceModels.findOne({ devicePass_Key });
-  if (!device) return res.json({ success: false, message: "Invalid passkey" });
+  if (!device) {
+    return res.json({ success: false, message: "Invalid passkey" });
+  }
 
-  if (EnterdevicePass_Key !== device.devicePass_Key)
+  // 2️⃣ Check if entered passkey matches
+  if (EnterdevicePass_Key !== device.devicePass_Key) {
     return res.json({ success: false, message: "Wrong passkey" });
+  }
 
-if (device.user && device.user.toString() !== userId) {
-  return res.json({
-    success: false,
-    message: "Device already assigned"
-  });
-}
+  // 3️⃣ Initialize users array if not present
+  if (!device.user) device.user = [];
 
+  // 4️⃣ Add current user to users array if not already added
+  if (!device.user.includes(userId)) {
+    device.user.push(userId);
+  }
+
+  // 5️⃣ Deactivate all other devices of this user
   await DeviceModels.updateMany(
-    { user: userId },
+    { users: userId },
     { $set: { isActive: false } }
   );
 
-
-  device.user = userId;
+  // 6️⃣ Update device info for this user
   device.isVerified = true;
   device.isActive = true;
   device.lastSeen = new Date();
+
   await device.save();
 
+  // 7️⃣ Respond with success
   res.json({ success: true, deviceId: device._id });
 };
 
