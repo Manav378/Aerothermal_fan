@@ -4,7 +4,9 @@ const OFFLINE_TIME = 30 * 1000;
 
 export const getDevice = async (req, res) => {
   try {
-    const devices = await DeviceModels.find();
+    const userId = req.UserId
+
+    const devices = await DeviceModels.find({user: userId });
 
     const updatedIsOnline = devices.map((device) => {
       const isOnline =
@@ -32,7 +34,7 @@ export const getDevice = async (req, res) => {
 
 export const getMyActiveDevice = async (req, res) => {
   const device = await DeviceModels.findOne({
-    user: req.userId,
+    user: req.UserId,
     isActive: true
   });
 
@@ -71,7 +73,8 @@ export const getMyActiveDevice = async (req, res) => {
 
 export const Adddevice = async (req, res) => {
   const { devicePass_Key, EnterdevicePass_Key } = req.body;
-  const userId = req.userId;
+  const userId = req.UserId;
+  console.log(userId)
 
   const device = await DeviceModels.findOne({ devicePass_Key });
   if (!device) return res.json({ success: false, message: "Invalid passkey" });
@@ -79,6 +82,12 @@ export const Adddevice = async (req, res) => {
   if (EnterdevicePass_Key !== device.devicePass_Key)
     return res.json({ success: false, message: "Wrong passkey" });
 
+if (device.user && device.user.toString() !== userId) {
+  return res.json({
+    success: false,
+    message: "Device already assigned"
+  });
+}
 
   await DeviceModels.updateMany(
     { user: userId },

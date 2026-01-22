@@ -39,25 +39,39 @@ useEffect(() => {
 
 
   // Update PWM live if not auto mode
-  useEffect(() => {
-    if (!backendUrl || autoMode || !key) return;
-    const sendpwm = async () => {
-      try {
-      const res =   await axios.post(`${backendUrl}/api/dashboard/pwm/${key}`, { duty: debouncedPwm });
-        
-      } catch (error) {
-        console.log(error);
+useEffect(() => {
+  if (!backendUrl || autoMode || !key) return;
+
+  const sendpwm = async () => {
+    try {
+      if (debouncedPwm !== null && debouncedPwm !== undefined) {
+        // Make sure it's a number
+        const pwmValue = Number(debouncedPwm);
+
+        // Optional: clamp between 80-255 to prevent backend 400
+        if (pwmValue < 80 || pwmValue > 255) return;
+
+        await axios.post(
+          `${backendUrl}/api/dashboard/pwm/${key}`,
+          { duty: pwmValue },
+          { withCredentials: true }
+        );
       }
-    };
-  if (debouncedPwm !== null) sendpwm();
-  }, [key, autoMode, backendUrl,debouncedPwm]);
+    } catch (error) {
+      console.log("PWM update error:", error.response?.data || error.message);
+    }
+  };
+
+  sendpwm();
+}, [key, autoMode, backendUrl, debouncedPwm]);
+
 
   // Auto mode toggle
   useEffect(() => {
    const sendauto = async()=>{
     if(!backendUrl || !key) return
     try {
-      const res = await axios.post(backendUrl+`/api/dashboard/auto/${key}` , {enabled:autoMode})
+      const res = await axios.post(backendUrl+`/api/dashboard/auto/${key}` , {enabled:autoMode},{withCredentials:true})
      
 
       

@@ -21,7 +21,7 @@ const AddDevice = () => {
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const res = await axios.get(`${backendUrl}/api/device`);
+        const res = await axios.get(`${backendUrl}/api/device`,{withCredentials:true});
         if (res.data && Array.isArray(res.data.data)) {
           setDevices(res.data.data);
         } else {

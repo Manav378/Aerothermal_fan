@@ -26,7 +26,7 @@ const [autoMode, setAutoMode] = useState(null);
 
 const fetchMyDevice = async () => {
   try {
-    const { data } = await axios.get(`${backendUrl}/api/device/my-device`);
+    const { data } = await axios.get(`${backendUrl}/api/device/my-device` ,{withCredentials:true});
 
     if (data.success) {
       setIsOnlineDeviceData(data.device);
