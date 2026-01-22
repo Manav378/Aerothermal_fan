@@ -10,6 +10,6 @@ router.post('/sensor', sensorController);
 
 router.post("/pwm/:devicekey",userAuth, pwmSliderController);
 router.post("/auto/:devicekey",userAuth, autoModeController);
-router.get("/pwm-status", pwmStatusController);
+router.get("/pwm-status/:devicekey", pwmStatusController);
 
 export default router;
