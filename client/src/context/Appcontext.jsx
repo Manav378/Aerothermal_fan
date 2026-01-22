@@ -24,31 +24,36 @@ const [autoMode, setAutoMode] = useState(null);
 
 
 
-  const fetchMyDevice = async () => {
-    try {
-      const { data } = await axios.get(`${backendUrl}/api/device/my-device`);
-      if (data.success) {
-        console.log(data)
-        setIsOnlineDeviceData(data.device);
-        settemperature(data.device.temperature);
-        setkey(data.device.devicePass_Key)
-        setrpm(data.device.rpm);
-        setAutoMode(data.device.autoMode);
-          setpwm(data.device.pwm);
-    
-      } else {
-        setIsOnlineDeviceData(null);
-        settemperature(0);
-        setrpm(0);
-        setpwm(0);
-      }
-    } catch (err) {
-      setIsOnlineDeviceData(null);
-      settemperature(0);
-      setrpm(0);
-      setpwm(0);
+const fetchMyDevice = async () => {
+  try {
+    const { data } = await axios.get(`${backendUrl}/api/device/my-device`);
+
+    if (data.success) {
+      setIsOnlineDeviceData(data.device);
+
+      // ✅ Live values
+      settemperature(data.device.temperature || 0);
+      setrpm(data.device.rpm || 0);
+      setpwm(data.device.pwm || 0);
+
+      setkey(data.device.devicePass_Key);
+
+      // ❗ ONLY FIRST TIME init
+      setAutoMode(prev =>
+        prev === null ? data.device.autoMode : prev
+      );
+
+      setPwmSlider(prev =>
+        prev === null ? data.device.pwm : prev
+      );
     }
-  };
+  } catch (err) {
+    settemperature(0);
+    setrpm(0);
+    setpwm(0);
+  }
+};
+
 
 
   

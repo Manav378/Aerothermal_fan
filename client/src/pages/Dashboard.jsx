@@ -27,12 +27,15 @@ setAutoMode,useDebounce
 const debouncedPwm = useDebounce(pwmSlider, 300);
   // Load assigned device
 useEffect(() => {
-  
- 
-  fetchMyDevice()
- 
+  fetchMyDevice(); // initial load
 
+  const interval = setInterval(() => {
+    fetchMyDevice();
+  }, 2000); // 2 sec polling
+
+  return () => clearInterval(interval);
 }, []);
+
 
 
   // Update PWM live if not auto mode
@@ -55,11 +58,9 @@ useEffect(() => {
     if(!backendUrl || !key) return
     try {
       const res = await axios.post(backendUrl+`/api/dashboard/auto/${key}` , {enabled:autoMode})
-      setAutoMode(res.data.autoMode)
+     
 
-       if (!res.data.autoMode && res.data.pwmValue !== undefined) {
-        setPwmSlider(res.data.pwmValue);
-      }
+      
     } catch (error) {
       console.log(error)
       
