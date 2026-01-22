@@ -123,9 +123,11 @@ export const autoModeController = async (req, res) => {
 
 
 export const pwmStatusController = async (req, res) => {
-  const { devicekey } = req.query;
+  const { devicekey } = req.params;
 
-  const device = await DeviceModels.findOne({ devicePass_Key: devicekey });
+  const device = await DeviceModels.findOne({
+    devicePass_Key: devicekey
+  });
 
   if (!device) {
     return res.status(404).json({ success: false });
