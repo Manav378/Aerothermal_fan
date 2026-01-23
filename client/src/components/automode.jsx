@@ -1,6 +1,11 @@
 import React from "react";
+import { translations } from "../Theme/translation";
+import { useContext } from "react";
+import { Appcontent } from "../context/Appcontext";
 
 const AutoModeCard = ({ autoMode, setAutoMode }) => {
+
+const {language} = useContext(Appcontent)
   return (
     <div
       className="
@@ -22,7 +27,7 @@ const AutoModeCard = ({ autoMode, setAutoMode }) => {
     >
       {/* Text */}
       <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-        Auto Mode
+       {translations[language]?.autoMode || translations.en.autoMode}
       </p>
 
       {/* Toggle Button */}

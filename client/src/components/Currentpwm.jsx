@@ -1,6 +1,9 @@
 import React from "react";
-
+import { translations } from "../Theme/translation";
+import { useContext } from "react";
+import { Appcontent } from "../context/Appcontext";
 const CurrentPWMCard = ({ pwm }) => {
+  const {language} = useContext(Appcontent)
   return (
     <div
       className="
@@ -20,7 +23,7 @@ const CurrentPWMCard = ({ pwm }) => {
     >
       {/* Label */}
       <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-        Current PWM
+        {translations[language]?.currentPWM || translations.en.currentPWM}
       </p>
 
       {/* Value */}
@@ -35,7 +38,7 @@ const CurrentPWMCard = ({ pwm }) => {
           dark:text-blue-400
         "
       >
-        {pwm}
+        {pwm}%
       </h2>
     </div>
   );

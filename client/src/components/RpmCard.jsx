@@ -1,6 +1,11 @@
 import React from "react";
-
+import { translations } from "../Theme/translation";
+import { useContext } from "react";
+import { Appcontent } from "../context/Appcontext";
 const RPMCard = ({ value = 0 }) => {
+    const {language} = useContext(Appcontent)
+   const t = translations[language] || translations.en;
+
   return (
     <div
       className="
@@ -19,7 +24,7 @@ const RPMCard = ({ value = 0 }) => {
     >
       {/* Label */}
       <p className="text-xs uppercase tracking-wide  select-none text-gray-400 dark:text-gray-500 mb-1">
-        Fan Speed
+               {t?.fanSpeed}
       </p>
 
       {/* Value */}
@@ -28,13 +33,13 @@ const RPMCard = ({ value = 0 }) => {
           {value.toLocaleString()}
         </p>
         <span className="text-xs sm:text-sm  select-none text-gray-500 dark:text-gray-400 mb-1">
-          RPM
+             {t?.rpmUnit}
         </span>
       </div>
 
       {/* Sub text */}
       <p className="text-xs text-gray-400  select-none dark:text-gray-500 mt-1">
-        Live rotation speed
+             {t?.liveRotationSpeed}
       </p>
     </div>
   );

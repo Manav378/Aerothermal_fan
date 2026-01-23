@@ -1,9 +1,13 @@
-import { useState, useEffect } from "react";
 import React from "react";
-
+import { useContext } from "react";
+import { useState, useEffect } from "react";
+import { Appcontent } from "../context/Appcontext";
+import axios from 'axios'
+import { toast } from "react-toastify";
 const Settings = () => {
  const [dark, setDark] = useState(localStorage.getItem("theme") === "dark");
 
+ const {backendUrl,setlanguage,language} = useContext(Appcontent)
  useEffect(() => {
   
   if(dark){
@@ -15,6 +19,49 @@ const Settings = () => {
   }  
  
  }, [dark]);
+
+
+// get languages function 
+ const gethandeler = async()=>{
+  try {
+    const res = await axios.get(backendUrl+'/api/pref/language' , {withCredentials:true});
+   if(res.data.success){
+    setlanguage(res.data.message);
+      localStorage.setItem("language", res.data.language);
+   }else{
+    toast.error(res.data.error);
+   }
+  } catch (error) {
+    console.log(error)
+    toast.error(error.message)
+  }
+ }
+ useEffect(() => {
+    
+    gethandeler()
+  }, []);
+
+  useEffect(() => {
+    if(language){
+      updatelanguage(language)
+    }
+   
+  }, [language]);
+
+
+
+  // update languages function
+
+
+  const updatelanguage = async(lang)=>{
+    try {
+      await axios.put(backendUrl+"/api/pref/language" ,{languages:lang}, {withCredentials:true});
+       localStorage.setItem("language", lang);
+    } catch (error) {
+      console(error);
+      toast.error(error.message)
+    }
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -51,6 +98,42 @@ const Settings = () => {
           </span>
         </button>
       </div>
+
+
+
+      {/* Languages section */}
+
+      <div className="mt-6 p-4 bg-gray-100 dark:bg-zinc-800 rounded-md">
+  <span className="font-medium text-gray-900 dark:text-gray-100 select-none">
+    Language
+  </span>
+  <div className="flex gap-4 mt-2">
+    <button
+    onClick={()=>{
+      setlanguage('en')
+      updatelanguage(language)
+    }}
+      className={`px-4 py-2 rounded-lg cursor-pointer font-semibold transition ${
+        language === "en" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+      } hover:bg-blue-600`}
+    >
+      English
+    </button>
+
+    <button
+    onClick={()=>{
+      setlanguage('hi')
+      updatelanguage(language)
+    }}
+      className={`px-4 py-2 rounded-lg font-semibold cursor-pointer transition ${
+        language === "hi" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+      } hover:bg-blue-600`}
+    >
+      हिन्दी
+    </button>
+  </div>
+</div>
+
     </div>
   );
 };

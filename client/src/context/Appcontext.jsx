@@ -14,7 +14,9 @@ export const AppContextProvider = (props) => {
   const [isLoggedin, setisLoggedin] = useState(false);
   const [isverify, setisverify] = useState(false);
   const [userData, setuserData] = useState(false);
-
+const [language, setlanguage] = useState(
+  localStorage.getItem("language") || "en"
+);
   const [temprature, settemperature] = useState(0);
   const [rpm, setrpm] = useState(0);
   const [pwm, setpwm] = useState(0);
@@ -151,7 +153,7 @@ const useDebounce = (value, delay) => {
     pwm, setIsOnlineDeviceData, IsOnlineDeviceData,
     settemperature, setrpm, setpwm, fetchMyDevice, key,
      pwmSlider,setPwmSlider,autoMode,setAutoMode,useDebounce,
-     setisverify,isverify
+     setisverify,isverify,setlanguage,language
   }
 
 

@@ -1,6 +1,9 @@
 import React from "react";
-
+import { translations } from "../Theme/translation";
+import { useContext } from "react";
+import { Appcontent } from "../context/Appcontext";
 const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
+    const {language} = useContext(Appcontent)
   const MIN = 0;
   const MAX = 255;
   const percent = Math.round((value / MAX) * 100);
@@ -23,7 +26,7 @@ const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
     >
       {/* Title */}
       <p className="text-xs text-gray-400  select-none dark:text-gray-500 mb-2">
-        PWM CONTROL
+      { translations[language]?.pwmControl}
       </p>
 
       {/* Percentage */}

@@ -19,12 +19,12 @@ export const getLanguage = async(req,res)=>{
 
 export const updateLanguage  = async(req , res)=>{
     try {
-        const {language} = req.body;
+        const {languages} = req.body;
         const userid = req.UserId;
           if(!userid) return res.status(404).json({success:false , message:"userid not found!"})
-        if(!['en' , 'hi'].includes(language)) return res.status(400).json({suceess:false , message:"Invalid language"})
+        if(!['en' , 'hi'].includes(languages)) return res.status(400).json({suceess:false , message:"Invalid language"})
 
-            await UserModel.findByIdAndUpdate(userid , {language})
+            await UserModel.findByIdAndUpdate(userid , {languages})
 
             res.status(200).json({success:true , message:"Language changed successfully😄"})
     } catch (error) {
