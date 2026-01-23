@@ -42,6 +42,7 @@ export const register = async (req, res) => {
       phone: hashedCryptoPhone.phone,
       iv: hashedCryptoPhone.iv,
       phoneHash: phoneHash,
+      lastseen: new Date(),
     });
 
     await user.save();
@@ -81,7 +82,7 @@ export const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.json({ success: false, message: "Invalid password" });
-
+  user.lastseen = new Date();
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });

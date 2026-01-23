@@ -1,4 +1,4 @@
-let currPWM = 80;        // PWM_MIN (IMPORTANT)
+let currPWM = 80;       
 let autoMode = false;
 
 export function setPWM(val) {

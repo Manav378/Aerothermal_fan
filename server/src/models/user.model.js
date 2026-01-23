@@ -41,6 +41,7 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    lastseen:{type:Date , default:null},
 
     devices: [
       {

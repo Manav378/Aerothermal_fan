@@ -1,42 +1,54 @@
+import DeviceRawData from "../models/DeviceRawData.js";
+import DeviceModels from "../models/Device.model.js";
+import UserModel from "../models/user.model.js";
+import { decryptPhone } from "../utils/crypto.js";
+import { sendTempAlertSms } from "../utils/SMS.js";
+import mongoose from "mongoose";
+const ALERT_GAP = 10 * 60 * 1000;
+const TEMP_LIMIT = 50;
 
-import { getPWM, isAutoMode, setAutoMode,setPWM } from './pwmSliderController.js';
-import DeviceRawData from '../models/DeviceRawData.js';
-import DeviceModels from '../models/Device.model.js';
-
-
-// ESP32 POST: update temperature & RPM
 export const sensorController = async (req, res) => {
   try {
     const { devicePass_Key, deviceName, temperature, rpm, pwm } = req.body;
+    const userId = new mongoose.Types.ObjectId(req.UserId); 
 
-    if (!devicePass_Key) {
-      return res.status(400).json({
-        success: false,
-        message: "devicePass_Key is required",
-      });
-    }
+    if (!devicePass_Key)
+      return res.status(400).json({ success: false, message: "devicePass_Key is required" });
 
     let device = await DeviceModels.findOne({ devicePass_Key });
 
     if (!device) {
       device = await DeviceModels.create({
         devicePass_Key,
-        deviceName,      // 👈 directly save
+        deviceName,
         temperature,
         rpm,
         pwm,
         isOnline: true,
         lastSeen: new Date(),
+        user: [userId],
       });
     } else {
-      device.deviceName = deviceName;  // 👈 UI ke liye allow
+      device.deviceName = deviceName;
       device.temperature = temperature;
       device.rpm = rpm;
       device.pwm = pwm;
       device.isOnline = true;
       device.lastSeen = new Date();
+
+      if (!device.user.some(u => u.toString() === req.UserId)) {
+        device.user.push(userId);
+      }
+
       await device.save();
     }
+
+    // Add device to user
+    await UserModel.findByIdAndUpdate(
+      userId,
+      { $addToSet: { devices: device._id } },
+      { new: true }
+    );
 
     await DeviceRawData.create({
       device: device._id,
@@ -45,7 +57,19 @@ export const sensorController = async (req, res) => {
       pwm,
     });
 
-    // 🔥 UI READY RESPONSE
+    await device.populate({ path: "user", select: "phone iv lastseen" });
+
+    if (temperature > TEMP_LIMIT && (!device.lastAlertAt ||Date.now() - new Date(device.lastAlertAt).getTime() > ALERT_GAP)) {
+      for (const u of device.user) {
+        if (u?.phone) {
+          const phone = decryptPhone(u.phone, u.iv);
+          await sendTempAlertSms(phone, temperature);
+        }
+      }
+      device.lastAlertAt = new Date();
+      await device.save();
+    }
+
     res.json({
       success: true,
       deviceName: device.deviceName,
@@ -54,24 +78,16 @@ export const sensorController = async (req, res) => {
       pwm: device.pwm,
       isOnline: true,
     });
-
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    console.log("Sensor Error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
 
 
 
-
 export const pwmSliderController = async (req, res) => {
-
-
-
-
   const { duty } = req.body;
   const { devicekey } = req.params;
 
@@ -81,7 +97,7 @@ export const pwmSliderController = async (req, res) => {
 
   const device = await DeviceModels.findOne({
     devicePass_Key: devicekey,
-    user: req.UserId
+    user: req.UserId,
   });
 
   if (!device) {
@@ -103,7 +119,7 @@ export const autoModeController = async (req, res) => {
 
   const device = await DeviceModels.findOne({
     devicePass_Key: devicekey,
-    user: req.UserId
+    user: req.UserId,
   });
 
   if (!device) {
@@ -116,17 +132,15 @@ export const autoModeController = async (req, res) => {
   res.json({
     success: true,
     autoMode: enabled,
-    pwmValue: device.pwmValue
+    pwmValue: device.pwmValue,
   });
 };
-
-
 
 export const pwmStatusController = async (req, res) => {
   const { devicekey } = req.params;
 
   const device = await DeviceModels.findOne({
-    devicePass_Key: devicekey
+    devicePass_Key: devicekey,
   });
 
   if (!device) {
@@ -135,9 +149,6 @@ export const pwmStatusController = async (req, res) => {
 
   res.json({
     autoMode: device.autoMode,
-    manualPWM: device.pwmValue
+    manualPWM: device.pwmValue,
   });
 };
-
-
-

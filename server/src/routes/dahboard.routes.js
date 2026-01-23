@@ -5,7 +5,7 @@ import userAuth from '../middelware/userAuth.js';
 
 const router = express.Router();
 
-router.post('/sensor', sensorController);
+router.post('/sensor',userAuth, sensorController);
 
 
 router.post("/pwm/:devicekey",userAuth, pwmSliderController);
