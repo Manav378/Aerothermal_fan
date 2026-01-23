@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Header = () => {
   const navigate = useNavigate()
   const { userData ,isLoggedin,isverify} = useContext(Appcontent);
-console.log(isLoggedin)
+console.log(userData)
   return (
     <section
       className="

@@ -88,6 +88,7 @@ const useDebounce = (value, delay) => {
     try {
       const { data } = await axios.get(backendUrl + '/api/user/data')
       if(data.success) {
+        console.log(data.success)
         setuserData(data.userData) 
         setisverify(data.userData.isAccountVerified)
         }else{
@@ -103,6 +104,7 @@ const useDebounce = (value, delay) => {
       const { data } = await axios.get(backendUrl + '/api/auth/is-auth', { withCredentials: true })
       if (data.success) {
         setisLoggedin(true)
+        getUserData()
       }
     } catch (error) {
       toast.error(error.message)
