@@ -9,6 +9,7 @@ import  dashboardroute from './src/routes/dahboard.routes.js'
 import DeviceRouter from './src/routes/device.routes.js'
 import Rawrouter from './src/routes/raw.routes.js'
 import { aggregateWeeklyData } from './src/controller/weeklyController.js'
+import PreferencesRouter from './src/routes/preferences.routes.js'
 
 
 
@@ -43,6 +44,7 @@ app.use('/api/dashboard', dashboardroute)
 app.use('/api/RawData', Rawrouter)
 app.use("/api/auth",authrouter)
 app.use("/api/device" , DeviceRouter)
+app.use("/api/pref" , PreferencesRouter)
 app.use("/api/user",userrouter)
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);

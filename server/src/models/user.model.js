@@ -43,6 +43,12 @@ const userSchema = new mongoose.Schema(
     },
     lastseen:{type:Date , default:null},
 
+    languages:{
+      type:String,
+      enum:['en' , 'hi'],
+      default:'en'
+    },
+
     devices: [
       {
         type: mongoose.Schema.Types.ObjectId,
