@@ -1,84 +1,64 @@
 export const EMAIL_VERIFY_TEMPLATE = `
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Aerothermal Fan | Email Verification</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #0F172A;
-      font-family: 'Inter', sans-serif;
-    }
-    .container {
-      max-width: 520px;
-      margin: 60px auto;
-      background: #FFFFFF;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .header {
-      background: linear-gradient(90deg, #0284C7, #0EA5E9);
-      padding: 20px;
-      color: #fff;
-      text-align: center;
-      font-size: 20px;
-      font-weight: 600;
-    }
-    .content {
-      padding: 32px;
-      color: #1E293B;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    .otp {
-      margin: 20px 0;
-      padding: 14px;
-      background: #F1F5F9;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 22px;
-      letter-spacing: 4px;
-      font-weight: 600;
-      color: #0284C7;
-    }
-    .footer {
-      padding: 16px;
-      background: #F8FAFC;
-      font-size: 12px;
-      color: #64748B;
-      text-align: center;
-    }
-  </style>
-</head>
+<body style="margin:0;padding:0;background:#0F172A;font-family:Arial,Helvetica,sans-serif;">
 
-<body>
-  <div class="container">
-    <div class="header">
-      🌬️ Aerothermal Fan
-    </div>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0F172A;padding:40px 0;">
+  <tr>
+    <td align="center">
 
-    <div class="content">
-      <h3>Email Verification</h3>
-      <p>
-        You’re almost there! Verify your account associated with  
-        <strong>{{email}}</strong>.
-      </p>
+      <table width="520" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
+        
+        <!-- Header -->
+        <tr>
+          <td align="center" style="background:linear-gradient(90deg,#0284C7,#0EA5E9);padding:20px;color:#ffffff;font-size:20px;font-weight:bold;">
+            🌬️ Aerothermal Fan
+          </td>
+        </tr>
 
-      <p>Use the OTP below to complete verification:</p>
+        <!-- Content -->
+        <tr>
+          <td style="padding:30px;color:#1E293B;font-size:14px;line-height:1.6;">
+            <h3 style="margin-top:0;">Email Verification</h3>
 
-      <div class="otp">{{otp}}</div>
+            <p>
+              You’re almost there! Verify your account associated with  
+              <strong>{{email}}</strong>.
+            </p>
 
-      <p>This OTP is valid for <strong>24 hours</strong>.</p>
-    </div>
+            <p>Use the OTP below to complete verification:</p>
 
-    <div class="footer">
-      © 2026 Aerothermal Fan • Smart IoT Cooling Solutions
-    </div>
-  </div>
+            <div style="
+              background:#F1F5F9;
+              padding:14px;
+              text-align:center;
+              font-size:22px;
+              letter-spacing:4px;
+              font-weight:bold;
+              color:#0284C7;
+              border-radius:6px;
+              margin:20px 0;
+            ">
+              {{otp}}
+            </div>
+
+            <p>This OTP is valid for <strong>24 hours</strong>.</p>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td align="center" style="background:#F8FAFC;padding:14px;font-size:12px;color:#64748B;">
+            © 2026 Aerothermal Fan • Smart IoT Cooling Solutions
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+
 </body>
 </html>
-`
+`;
