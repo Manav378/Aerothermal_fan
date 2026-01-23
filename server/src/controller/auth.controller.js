@@ -1,15 +1,17 @@
 import mongoose from "mongoose";
-import UserModel from '../models/user.model.js'
+import UserModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import transporter from "../db/nodemailer.js";
-import { EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from '../db/emailTemplates.js';
-import { encryptedPhone , hashphone } from "../utils/crypto.js";
+import { EMAIL_VERIFY_TEMPLATE } from "../db/emailTemplates.js";
+import { PASSWORD_RESET_TEMPLATE } from "../db/passwordResetTemplate.js";
+import { WELCOME_EMAIL_TEMPLATE } from "../db/WelcomeEmailTemplate.js";
+import { encryptedPhone, hashphone } from "../utils/crypto.js";
 // ✅ Cross-site cookie settings
 const cookieOptions = {
-  httpOnly:true,
-  secure:  process.env.NODE_ENV === 'production',       
-  sameSite:  process.env.NODE_ENV === 'production' ? 'none' : 'lax',  
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
@@ -17,34 +19,50 @@ const cookieOptions = {
 export const register = async (req, res) => {
   const { name, email, password, phone } = req.body;
   if (!name || !email || !password || !phone)
-    return res.status(404).json({ message: "The user is not created", success: false });
+    return res
+      .status(404)
+      .json({ message: "The user is not created", success: false });
 
   try {
     const existingUser = await UserModel.findOne({ email });
-    if (existingUser) return res.json({ success: false, message: "Email already exist" });
+    if (existingUser)
+      return res.json({ success: false, message: "Email already exist" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const phoneHash = hashphone(phone)
-    const phoneExist = await UserModel.findOne({phoneHash})
-    if(phoneExist) return res.json({success:false , message:"phone already exist"})
-  
-    const hashedCryptoPhone = encryptedPhone(phone);
-    const user = new UserModel({ name, email, password: hashedPassword , phone:hashedCryptoPhone.phone , iv:hashedCryptoPhone.iv,phoneHash:phoneHash });
+    const phoneHash = hashphone(phone);
+    const phoneExist = await UserModel.findOne({ phoneHash });
+    if (phoneExist)
+      return res.json({ success: false, message: "phone already exist" });
 
+    const hashedCryptoPhone = encryptedPhone(phone);
+    const user = new UserModel({
+      name,
+      email,
+      password: hashedPassword,
+      phone: hashedCryptoPhone.phone,
+      iv: hashedCryptoPhone.iv,
+      phoneHash: phoneHash,
+    });
 
     await user.save();
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
     res.cookie("token", token, cookieOptions);
 
     await transporter.sendMail({
-      from: `"DanceScript Team" <${process.env.SENDER_EMAIL}>`,
+      from: `"Aerothermal Fan Team 🌬️" <${process.env.SENDER_EMAIL}>`,
       to: email,
-      subject: "Welcome to DanceScript",
-      text: `Your account has been created with email: ${email}`,
+      subject: "Welcome to Aerothermal Fan",
+      html: WELCOME_EMAIL_TEMPLATE.replace("{{name}}", name || "User").replace(
+        "{{email}}",
+        email,
+      ),
+      
     });
 
-    return res.json({ success: true , user });
+    return res.json({ success: true, user });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
@@ -53,16 +71,20 @@ export const register = async (req, res) => {
 // -------------------- LOGIN --------------------
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) return res.json({ success: false, message: "Email and password required" });
+  if (!email || !password)
+    return res.json({ success: false, message: "Email and password required" });
 
   try {
     const user = await UserModel.findOne({ email });
     if (!user) return res.json({ success: false, message: "Invalid email" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.json({ success: false, message: "Invalid password" });
+    if (!isMatch)
+      return res.json({ success: false, message: "Invalid password" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
     res.cookie("token", token, cookieOptions);
 
     return res.json({ success: true });
@@ -95,22 +117,28 @@ export const sendverifyotp = async (req, res) => {
   try {
     const user = await UserModel.findById(req.UserId); // ✅ JWT based
     if (!user) return res.json({ success: false, message: "User not found" });
-    if (user.isAccountVerified) return res.json({ success: false, message: "Account already verified" });
+    if (user.isAccountVerified)
+      return res.json({ success: false, message: "Account already verified" });
 
     const otp = String(Math.floor(100000 + Math.random() * 900000));
     user.verifyotp = otp;
     user.verifyotpExprieAt = Date.now() + 24 * 60 * 60 * 1000;
     await user.save();
-    
-    await transporter.sendMail({
-      from: `"DanceScript Team" <${process.env.SENDER_EMAIL}>`,
-      to: user.email,
-      subject: "Account verification OTP",
-      // text: `Your OTP is ${otp}. Verify your account using this OTP.`,
-      html:EMAIL_VERIFY_TEMPLATE.replace('{{otp}}' , otp).replace('{{email}}' , user.email)
-    });
 
-    return res.json({ success: true, message: "Verification OTP sent to email" });
+   await transporter.sendMail({
+  from: `"Aerothermal Fan Team 🌬️" <${process.env.SENDER_EMAIL}>`,
+  to: user.email,
+  subject: "Aerothermal Fan | Account Verification OTP",
+  html: EMAIL_VERIFY_TEMPLATE
+    .replace("{{otp}}", otp)
+    .replace("{{email}}", user.email),
+
+});
+
+    return res.json({
+      success: true,
+      message: "Verification OTP sent to email",
+    });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
@@ -132,7 +160,7 @@ export const verifyEmail = async (req, res) => {
       return res.json({ success: false, message: "OTP expired" });
 
     user.isAccountVerified = true;
-    user.verifyotp = '';
+    user.verifyotp = "";
     user.verifyotpExprieAt = 0;
     await user.save();
 
@@ -149,19 +177,23 @@ export const setResetotp = async (req, res) => {
 
   try {
     const user = await UserModel.findOne({ email });
-    if (!user) return res.json({ success: false, message: "User not available" });
+    if (!user)
+      return res.json({ success: false, message: "User not available" });
 
     const otp = String(Math.floor(100000 + Math.random() * 900000));
     user.resetotp = otp;
     user.resetotpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
     await user.save();
 
-    await transporter.sendMail({
-      from: `"DanceScript Team" <${process.env.SENDER_EMAIL}>`,
-      to: user.email,
-      subject: "Password Reset OTP",
-      html:PASSWORD_RESET_TEMPLATE.replace('{{otp}}' , otp).replace('{{email}}' , user.email)
-    });
+  await transporter.sendMail({
+  from: `"Aerothermal Fan Team 🌬️" <${process.env.SENDER_EMAIL}>`,
+  to: user.email,
+  subject: "Aerothermal Fan | Password Reset OTP",
+  html: PASSWORD_RESET_TEMPLATE
+    .replace("{{otp}}", otp)
+    .replace("{{email}}", user.email),
+});
+
 
     return res.json({ success: true, message: "OTP sent to your email" });
   } catch (error) {
@@ -173,7 +205,10 @@ export const setResetotp = async (req, res) => {
 export const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
   if (!email || !otp || !newPassword)
-    return res.json({ success: false, message: "Email, OTP, and new password are required" });
+    return res.json({
+      success: false,
+      message: "Email, OTP, and new password are required",
+    });
 
   try {
     const user = await UserModel.findOne({ email });
@@ -187,7 +222,7 @@ export const resetPassword = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
-    user.resetotp = '';
+    user.resetotp = "";
     user.resetotpExpireAt = 0;
     await user.save();
 

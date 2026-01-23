@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate()
-  const { userData ,isLoggedin} = useContext(Appcontent);
+  const { userData ,isLoggedin,isverify} = useContext(Appcontent);
 console.log(isLoggedin)
   return (
     <section
@@ -91,7 +91,13 @@ console.log(isLoggedin)
       {/* CTA */}
       <button
       onClick={()=>{
-        isLoggedin === true ? navigate("/dashboard") : toast.info("Please Login/Signup!")
+       if(!isLoggedin ){
+        toast.info("Please Login/Signup")
+       }else if(!isverify){
+        toast.info("Please Verify your Email")
+       }else{
+        navigate("/dashboard")
+       }
       }}
         className=" cursor-pointer
           px-8 sm:px-12

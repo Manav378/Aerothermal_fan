@@ -1,8 +1,8 @@
-export const EMAIL_VERIFY_TEMPLATE = `
+export const PASSWORD_RESET_TEMPLATE = `
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Aerothermal Fan | Email Verification</title>
+  <title>Aerothermal Fan | Password Reset</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@ export const EMAIL_VERIFY_TEMPLATE = `
       overflow: hidden;
     }
     .header {
-      background: linear-gradient(90deg, #0284C7, #0EA5E9);
+      background: linear-gradient(90deg, #F97316, #FB923C);
       padding: 20px;
       color: #fff;
       text-align: center;
@@ -37,13 +37,13 @@ export const EMAIL_VERIFY_TEMPLATE = `
     .otp {
       margin: 20px 0;
       padding: 14px;
-      background: #F1F5F9;
+      background: #FFF7ED;
       border-radius: 6px;
       text-align: center;
       font-size: 22px;
       letter-spacing: 4px;
       font-weight: 600;
-      color: #0284C7;
+      color: #F97316;
     }
     .footer {
       padding: 16px;
@@ -58,25 +58,25 @@ export const EMAIL_VERIFY_TEMPLATE = `
 <body>
   <div class="container">
     <div class="header">
-      🌬️ Aerothermal Fan
+      🔐 Aerothermal Fan
     </div>
 
     <div class="content">
-      <h3>Email Verification</h3>
+      <h3>Password Reset Request</h3>
       <p>
-        You’re almost there! Verify your account associated with  
+        A password reset was requested for  
         <strong>{{email}}</strong>.
       </p>
 
-      <p>Use the OTP below to complete verification:</p>
+      <p>Use the OTP below to reset your password:</p>
 
       <div class="otp">{{otp}}</div>
 
-      <p>This OTP is valid for <strong>24 hours</strong>.</p>
+      <p>This OTP is valid for <strong>15 minutes</strong>.</p>
     </div>
 
     <div class="footer">
-      © 2026 Aerothermal Fan • Smart IoT Cooling Solutions
+      If this wasn’t you, please ignore this email.
     </div>
   </div>
 </body>

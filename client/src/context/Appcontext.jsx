@@ -12,6 +12,7 @@ export const Appcontent = createContext()
 export const AppContextProvider = (props) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL
   const [isLoggedin, setisLoggedin] = useState(false);
+  const [isverify, setisverify] = useState(false);
   const [userData, setuserData] = useState(false);
 
   const [temprature, settemperature] = useState(0);
@@ -84,7 +85,13 @@ const useDebounce = (value, delay) => {
   const getUserData = async () => {
     try {
       const { data } = await axios.get(backendUrl + '/api/user/data')
-      data.success ? setuserData(data.userData) : toast.error(data.message)
+      if(data.success) {
+        setuserData(data.userData) 
+        setisverify(data.userData.isAccountVerified)
+        }else{
+
+          //  toast.info(data.message)
+         }
     } catch (error) {
       toast.error(error.message)
     }
@@ -94,7 +101,6 @@ const useDebounce = (value, delay) => {
       const { data } = await axios.get(backendUrl + '/api/auth/is-auth', { withCredentials: true })
       if (data.success) {
         setisLoggedin(true)
-        getUserData()
       }
     } catch (error) {
       toast.error(error.message)
@@ -112,10 +118,7 @@ const useDebounce = (value, delay) => {
 
 
 
-  useEffect(() => {
-    axios.defaults.withCredentials = true;
-    getAuthstate()
-  }, []);
+
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -147,7 +150,8 @@ const useDebounce = (value, delay) => {
     getUserData, temprature, rpm,
     pwm, setIsOnlineDeviceData, IsOnlineDeviceData,
     settemperature, setrpm, setpwm, fetchMyDevice, key,
-     pwmSlider,setPwmSlider,autoMode,setAutoMode,useDebounce
+     pwmSlider,setPwmSlider,autoMode,setAutoMode,useDebounce,
+     setisverify,isverify
   }
 
 
