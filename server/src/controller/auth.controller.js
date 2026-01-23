@@ -4,19 +4,19 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import transporter from "../db/nodemailer.js";
 import { EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from '../db/emailTemplates.js';
-
+import { encryptedPhone , hashphone } from "../utils/crypto.js";
 // ✅ Cross-site cookie settings
 const cookieOptions = {
   httpOnly:true,
-  secure:  process.env.NODE_ENV === 'production',       // must for HTTPS / VS Code Ports / mobile
-  sameSite:  process.env.NODE_ENV === 'production' ? 'none' : 'lax',   // cross-site safe
+  secure:  process.env.NODE_ENV === 'production',       
+  sameSite:  process.env.NODE_ENV === 'production' ? 'none' : 'lax',  
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
 // -------------------- REGISTER --------------------
 export const register = async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password)
+  const { name, email, password, phone } = req.body;
+  if (!name || !email || !password || !phone)
     return res.status(404).json({ message: "The user is not created", success: false });
 
   try {
@@ -24,7 +24,14 @@ export const register = async (req, res) => {
     if (existingUser) return res.json({ success: false, message: "Email already exist" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new UserModel({ name, email, password: hashedPassword });
+    const phoneHash = hashphone(phone)
+    const phoneExist = await UserModel.findOne({phoneHash})
+    if(phoneExist) return res.json({success:false , message:"phone already exist"})
+  
+    const hashedCryptoPhone = encryptedPhone(phone);
+    const user = new UserModel({ name, email, password: hashedPassword , phone:hashedCryptoPhone.phone , iv:hashedCryptoPhone.iv,phoneHash:phoneHash });
+
+
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -37,7 +44,7 @@ export const register = async (req, res) => {
       text: `Your account has been created with email: ${email}`,
     });
 
-    return res.json({ success: true });
+    return res.json({ success: true , user });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }

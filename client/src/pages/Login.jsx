@@ -5,21 +5,22 @@ import { Appcontent } from "../context/Appcontext.jsx";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Loader2 } from "lucide-react";
-
+import { Phone } from "lucide-react";
 
 const Login = () => {
   const [state, setstate] = useState("sign-up");
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
-const [loading, setloading] = useState(false);
+  const [phone, setphone] = useState('');
+  const [loading, setloading] = useState(false);
   const navigate = useNavigate();
   const { backendUrl, setisLoggedin, getUserData } = useContext(Appcontent);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     axios.defaults.withCredentials = true;
-     setloading(true);
+    setloading(true);
     try {
       let url =
         state === "sign-up"
@@ -28,17 +29,17 @@ const [loading, setloading] = useState(false);
 
       let payload =
         state === "sign-up"
-          ? { name, email, password }
+          ? { name, email, password, phone }
           : { email, password };
-  console.log("Sending request to:", url, "with payload:", payload);
+      console.log("Sending request to:", url, "with payload:", payload);
       const { data } = await axios.post(url, payload);
-console.log("Response received:", data);
+      console.log("Response received:", data);
       if (data.success) {
-        
+
         setisLoggedin(true);
         await getUserData();
         state === "sign-up" ? navigate("/") : navigate("/dashboard")
-      
+
         toast.success(
           state === "sign-up"
             ? "System Initialized Successfully ⚙️"
@@ -49,14 +50,14 @@ console.log("Response received:", data);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Server Error ❌");
-    }finally{
+    } finally {
       setloading(false);
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen  select-none px-6 bg-linear-to-br from-slate-900 via-blue-950 to-slate-800 relative overflow-hidden">
-      
+
       {/* airflow glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.15),transparent_60%)]"></div>
 
@@ -82,17 +83,32 @@ console.log("Response received:", data);
 
         <form onSubmit={onSubmitHandler}>
           {state === "sign-up" && (
-            <div className="mb-4 flex items-center gap-3 w-full px-5 py-3 rounded-xl bg-slate-800 border border-sky-800/50">
-              <img src={assets.person_icon} alt="" className="opacity-80" />
-              <input
-                onChange={(e) => setname(e.target.value)}
-                value={name}
-                className="bg-transparent text-sky-100 outline-none w-full placeholder-sky-500"
-                type="text"
-                placeholder="Engineer Name"
-                required
-              />
-            </div>
+            <>
+              <div className="mb-4 flex items-center gap-3 w-full px-5 py-3 rounded-xl bg-slate-800 border border-sky-800/50">
+                <img src={assets.person_icon} alt="" className="opacity-80" />
+                <input
+                  onChange={(e) => setname(e.target.value)}
+                  value={name}
+                  className="bg-transparent text-sky-100 outline-none w-full placeholder-sky-500"
+                  type="text"
+                  placeholder="Engineer Name"
+                  required
+                />
+              </div>
+
+              <div className="mb-4 flex items-center gap-3 w-full px-5 py-3 rounded-xl bg-slate-800 border border-sky-800/50">
+              <Phone className="w-5 h-5 text-white-400 opacity-80" />
+                <input
+                  onChange={(e) => setphone(e.target.value)}
+                  value={phone}
+                  className="bg-transparent text-sky-100 outline-none w-full placeholder-sky-500"
+                  type="tel"
+                  placeholder="Enter phone number"
+                  required
+                />
+              </div>
+            </>
+
           )}
 
           <div className="mb-4 flex items-center gap-3 w-full px-5 py-3 rounded-xl bg-slate-800 border border-sky-800/50">
@@ -119,6 +135,8 @@ console.log("Response received:", data);
             />
           </div>
 
+
+
           <p
             onClick={() => navigate("/reset-password")}
             className="mb-5 text-sky-400 cursor-pointer text-xs hover:text-sky-300 transition"
@@ -127,11 +145,11 @@ console.log("Response received:", data);
           </p>
 
           <button disabled={loading} className={`w-full py-3 ${loading ? "cursor-not-allowed bg-linear-to-r  from-sky-500 to-cyan-700" : "bg-linear-to-r cursor-pointer from-sky-500 to-cyan-700"} rounded-xl  text-white font-semibold tracking-wide hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] transition`}>
-       
-            {loading ? 
-            <>
-            <Loader2  className="w-5 h-5 animate-spin m-auto"/>
-            </> : state === "sign-up" ? "Initialize System" : "Enter Control Panel"}
+
+            {loading ?
+              <>
+                <Loader2 className="w-5 h-5 animate-spin m-auto" />
+              </> : state === "sign-up" ? "Initialize System" : "Enter Control Panel"}
           </button>
         </form>
 

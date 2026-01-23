@@ -1,4 +1,4 @@
-// server/routes/dashboard.routes.js
+
 import express from 'express';
 import { sensorController, pwmSliderController, autoModeController, pwmStatusController} from '../controller/dashboard.controller.js';
 import userAuth from '../middelware/userAuth.js';

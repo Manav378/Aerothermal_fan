@@ -1,49 +1,57 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    password:{
-        type:String,
-        required:true,
-        unique:true
+    password: {
+      type: String,
+      required: true,
     },
-    verifyotp:{
-        type:String,
-        default:''
+    phone: {
+      type: String,
+      required: true,
     },
-    verifyotpExprieAt:{
-        type:Number,
-        default:0
+    iv: { type: String, required: true },
+    phoneHash:{type:String , required:true,unique:true},
+    verifyotp: {
+      type: String,
+      default: "",
     },
-    isAccountVerified:{
-        type:Boolean,
-        default:false
+    verifyotpExprieAt: {
+      type: Number,
+      default: 0,
     },
-    resetotp:{
-        type:String,
-        default:''
+    isAccountVerified: {
+      type: Boolean,
+      default: false,
     },
-    resetoptExpireAt:{
-        type:Number,
-        default:0
+    resetotp: {
+      type: String,
+      default: "",
+    },
+    resetoptExpireAt: {
+      type: Number,
+      default: 0,
     },
 
-    devices:[
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Device"
-        }
-    ]
-},{timestamps:true})
+    devices: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Device",
+      },
+    ],
+  },
+  { timestamps: true },
+);
 
-const UserModel = mongoose.models.user|| mongoose.model("user" , userSchema);
+const UserModel = mongoose.models.user || mongoose.model("user", userSchema);
 
-export default UserModel
+export default UserModel;
