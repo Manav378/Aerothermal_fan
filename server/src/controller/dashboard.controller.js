@@ -10,12 +10,12 @@ const TEMP_LIMIT = 50;
 export const sensorController = async (req, res) => {
   try {
     const { devicePass_Key, deviceName, temperature, rpm, pwm } = req.body;
-    const userId = new mongoose.Types.ObjectId(req.UserId); 
+  
 
     if (!devicePass_Key)
       return res.status(400).json({ success: false, message: "devicePass_Key is required" });
 
-    let device = await DeviceModels.findOne({ devicePass_Key });
+    let device = await DeviceModels.findOne({ devicePass_Key }).populate({path:"user" , select:"phone iv"});
 
     if (!device) {
       device = await DeviceModels.create({
@@ -26,7 +26,6 @@ export const sensorController = async (req, res) => {
         pwm,
         isOnline: true,
         lastSeen: new Date(),
-        user: [userId],
       });
     } else {
       device.deviceName = deviceName;
@@ -36,19 +35,12 @@ export const sensorController = async (req, res) => {
       device.isOnline = true;
       device.lastSeen = new Date();
 
-      if (!device.user.some(u => u.toString() === req.UserId)) {
-        device.user.push(userId);
-      }
+     
 
       await device.save();
     }
 
-    // Add device to user
-    await UserModel.findByIdAndUpdate(
-      userId,
-      { $addToSet: { devices: device._id } },
-      { new: true }
-    );
+  
 
     await DeviceRawData.create({
       device: device._id,
@@ -57,7 +49,7 @@ export const sensorController = async (req, res) => {
       pwm,
     });
 
-    await device.populate({ path: "user", select: "phone iv lastseen" });
+ 
 
     if (temperature > TEMP_LIMIT && (!device.lastAlertAt ||Date.now() - new Date(device.lastAlertAt).getTime() > ALERT_GAP)) {
       for (const u of device.user) {

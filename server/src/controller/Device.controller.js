@@ -73,7 +73,7 @@ export const getMyActiveDevice = async (req, res) => {
 export const Adddevice = async (req, res) => {
   const { devicePass_Key, EnterdevicePass_Key } = req.body;
   const userId = req.UserId;
-  console.log("Current User ID:", userId);
+
 
   // 1️⃣ Find the device by passkey
   const device = await DeviceModels.findOne({ devicePass_Key });
