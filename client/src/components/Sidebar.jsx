@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -17,6 +17,19 @@ const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const t = translations[language];
 
+  // 🔒 Lock body scroll when sidebar open (mobile)
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [open]);
+
   const linkClass =
     "flex items-center gap-3 px-4 py-2 rounded-md text-gray-300 hover:bg-slate-800 dark:hover:bg-zinc-800 transition";
 
@@ -25,7 +38,7 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* ☰ Mobile Menu Button (ONLY WHEN SIDEBAR CLOSED) */}
+      {/* ☰ Mobile Menu Button */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
@@ -43,12 +56,12 @@ const Sidebar = () => {
         </button>
       )}
 
-      {/* Overlay (mobile) */}
+      {/* Overlay */}
       {open && (
         <div
           onClick={() => setOpen(false)}
           className="
-            fixed inset-0 z-30
+            fixed inset-0 z-40
             bg-black/50
             md:hidden
           "
@@ -56,27 +69,25 @@ const Sidebar = () => {
       )}
 
       {/* Sidebar */}
-      <div
+      <aside
         className={`
           fixed md:static
-          top-0 left-0 z-40
-          w-64
-          min-h-screen
+          top-0 left-0 z-50
+          h-screen
+          w-64 max-w-[80%]
           px-4 pt-16 md:pt-6
           flex flex-col
           bg-slate-900
           dark:bg-zinc-950
-          transform
-          transition-transform
-          duration-300
+          transform transition-transform duration-300
           ${open ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
         `}
       >
-        {/* ❌ Close Button (ONLY WHEN SIDEBAR OPEN) */}
+        {/* ❌ Mobile Close */}
         {open && (
           <div className="flex items-center justify-between mb-6 md:hidden">
-            <h1 className="text-lg font-semibold select-none text-white tracking-wide">
+            <h1 className="text-lg font-semibold text-white tracking-wide">
               {t?.controlPanel}
             </h1>
             <button onClick={() => setOpen(false)}>
@@ -86,12 +97,12 @@ const Sidebar = () => {
         )}
 
         {/* Desktop Title */}
-        <h1 className="hidden md:block text-xl select-none font-semibold text-white mb-8 text-center tracking-wide">
+        <h1 className="hidden md:block text-xl font-semibold text-white mb-8 text-center tracking-wide">
           {t?.controlPanel}
         </h1>
 
-        {/* Nav */}
-        <nav className="flex flex-col select-none gap-2 flex-1">
+        {/* Navigation */}
+        <nav className="flex flex-col gap-2 flex-1 select-none">
           <NavLink
             to="/dashboard"
             onClick={() => setOpen(false)}
@@ -147,7 +158,7 @@ const Sidebar = () => {
             {t?.settings}
           </NavLink>
         </nav>
-      </div>
+      </aside>
     </>
   );
 };

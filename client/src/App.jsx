@@ -39,12 +39,16 @@ const AppLayout = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
+    <div className="min-h-screen flex overflow-hidden">
       {showSidebar && <Sidebar />}
 
-      {/* Page Content */}
-      <main className="flex-1 pt-14 md:pt-0">
+      <main
+        className={`
+          flex-1
+          ${showSidebar ? "pt-14 md:pt-0" : "pt-0"}
+          overflow-x-hidden
+        `}
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -60,6 +64,7 @@ const AppLayout = () => {
     </div>
   );
 };
+
 
 const App = () => {
   return (
