@@ -4,17 +4,18 @@ import { Appcontent } from "../context/Appcontext.jsx";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { translations } from "../Theme/translation.js";
+
 const AddDevice = () => {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [passKey, setPassKey] = useState("");
   const [connecting, setConnecting] = useState(false);
 
-  const { backendUrl,language } = useContext(Appcontent);
+  const { backendUrl, language } = useContext(Appcontent);
   const navigate = useNavigate();
-const t = translations[language];
-  // 🔹 Fetch already added devices
+  const t = translations[language];
+
+
   useEffect(() => {
     const fetchDevices = async () => {
       try {
@@ -33,7 +34,7 @@ const t = translations[language];
     fetchDevices();
   }, [backendUrl]);
 
-  // 🔹 Add device using passkey
+
   const handleAddDevice = async () => {
     if (!passKey) return;
 
@@ -50,25 +51,12 @@ const t = translations[language];
       );
 
       if (!res.data.success) {
-       toast.error(res.data.message || t.toastAddFail);
+        toast.error(res.data.message || t.toastAddFail);
         return;
       }
 
-      const statusRes = await axios.get(
-        `${backendUrl}/api/device/my-device`,
-        { withCredentials: true }
-      );
-
-      if (
-        statusRes.data.success &&
-        statusRes.data.device &&
-        statusRes.data.device.isOnline
-      ) {
-       toast.success(t.toastAddedSuccess);
-        navigate("/dashboard");
-      } else {
-       toast.info(t.toastDeviceOffline);
-      }
+      toast.success(t.toastAddedSuccess);
+      navigate("/dashboard");
     } catch (err) {
       toast.error(t.toastConnectFail);
     } finally {
@@ -77,19 +65,17 @@ const t = translations[language];
   };
 
   return (
-    <div className="min-h-screen flex-1 p-4 sm:p-6 lg:p-8 bg-slate-100 text-black dark:bg-zinc-900 dark:text-white transition-colors duration-300">
+    <div className="min-h-screen flex-1 p-4 sm:p-6 lg:p-8 bg-slate-100 dark:bg-zinc-900 text-black dark:text-white">
       
       {/* HEADER */}
-      <div className="mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold select-none">
-         {t.addDeviceTitle}
-        </h2>
-      </div>
+      <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+        {t.addDeviceTitle}
+      </h2>
 
-      {/* ADD DEVICE FORM */}
-      <div className="max-w-sm mb-10 bg-white dark:bg-zinc-800 p-5 rounded-2xl shadow transition-colors duration-300">
-        <label className="block mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-           {t.devicePassKey}
+      {/* ADD DEVICE */}
+      <div className="max-w-sm mb-10 bg-white dark:bg-zinc-800 p-5 rounded-2xl shadow">
+        <label className="block mb-2 text-sm font-medium">
+          {t.devicePassKey}
         </label>
 
         <input
@@ -98,81 +84,79 @@ const t = translations[language];
           value={passKey}
           onChange={(e) => setPassKey(e.target.value)}
           className="w-full rounded-lg px-3 py-2 mb-3
-                     bg-zinc-100 dark:bg-zinc-900
-                     text-black dark:text-white
-                     border border-zinc-300 dark:border-zinc-700
-                     placeholder-zinc-400
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+            bg-zinc-100 dark:bg-zinc-900
+            border border-zinc-300 dark:border-zinc-700
+            focus:ring-2 focus:ring-blue-500 outline-none"
         />
 
         <button
           onClick={handleAddDevice}
           disabled={!passKey || connecting}
           className="w-full py-2 rounded-lg font-medium
-                     bg-blue-600 hover:bg-blue-700
-                     text-white cursor-pointer
-                     disabled:opacity-50 disabled:cursor-not-allowed"
+            bg-blue-600 hover:bg-blue-700 text-white
+            disabled:opacity-50"
         >
           {connecting ? t.connecting : t.addDeviceBtn}
         </button>
 
-        <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-           {t.passKeyHelp}
+        <p className="mt-2 text-xs text-zinc-500">
+          {t.passKeyHelp}
         </p>
       </div>
 
       {/* MY DEVICES */}
-      <h3 className="text-xl font-semibold mb-4 select-none">
+      <h3 className="text-xl font-semibold mb-4">
         {t.myDevices}
       </h3>
 
       {loading ? (
-        <p className="text-zinc-500 dark:text-zinc-400">
-        <span>{t?.loadingDevices}</span>
-        </p>
+        <p className="text-zinc-500">{t.loadingDevices}</p>
       ) : devices.length === 0 ? (
-        <p className="text-zinc-500 dark:text-zinc-400">
-        <span>{t.noDevices}</span>
-        </p>
+        <p className="text-zinc-500">{t.noDevices}</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {devices.map((device) => (
-            <div
-              key={device._id}
-              className="rounded-2xl p-4 bg-white dark:bg-zinc-800 shadow
-                         border border-zinc-200 dark:border-zinc-700
-                         transition-colors duration-300"
-            >
-              <div className="flex justify-between items-center">
-                <h4 className="font-semibold">
-                  {device.deviceName}
-                </h4>
+        /* 🔥 SCROLLABLE CONTAINER */
+        <div className="max-h-[60vh] overflow-y-auto pr-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {devices.map((device) => (
+              <div
+                key={device._id}
+                className="rounded-2xl p-4 bg-white dark:bg-zinc-800 shadow
+                  border border-zinc-200 dark:border-zinc-700"
+              >
+                <div className="flex justify-between items-center">
+                  <h4 className="font-semibold truncate">
+                    {device.deviceName}
+                  </h4>
 
-                <span
-                  className={`h-3 w-3 rounded-full ${
-                    device.isOnline ? "bg-green-500" : "bg-red-500"
-                  }`}
-                />
+                  <span
+                    className={`h-3 w-3 rounded-full ${
+                      device.isOnline ? "bg-green-500" : "bg-red-500"
+                    }`}
+                  />
+                </div>
+
+                <p className="text-sm mt-2">
+                  {t.status}:{" "}
+                  <span
+                    className={
+                      device.isOnline
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }
+                  >
+                    {device.isOnline ? t.online : t.offline}
+                  </span>
+                </p>
+
+                <p className="text-xs text-zinc-500 mt-1">
+                  {t.lastSeen}:{" "}
+                  {device.lastSeen
+                    ? new Date(device.lastSeen).toLocaleString()
+                    : "--"}
+                </p>
               </div>
-
-              <p className="text-sm mt-2">
-                {t.status}:{" "}
-                <span
-                  className={
-                    device.isOnline
-                      ? "text-green-600 dark:text-green-400"
-                      : "text-red-600 dark:text-red-400"
-                  }
-                >
-              {device.isOnline ? t.online : t.offline}
-                </span>
-              </p>
-
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                {t.lastSeen}: {new Date(device.lastSeen).toLocaleString()}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>
