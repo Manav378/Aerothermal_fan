@@ -59,7 +59,7 @@ const EmailVerify = () => {
   }, [isLoggedin, userData]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 sm:px-6 bg-linear-to-br from-slate-900 via-blue-950 to-slate-800 relative overflow-hidden transition-colors duration-300">
+    <div className="flex items-center justify-center min-h-screen px-4 sm:px-6 bg-linear-to-br select-none from-slate-900 via-blue-950 to-slate-800 relative overflow-hidden transition-colors duration-300">
 
       {/* Thermal glow */}
       <div className="absolute inset-0 bg-[radial-linear(circle_at_top,rgba(56,189,248,0.15),transparent_60%)] pointer-events-none"></div>

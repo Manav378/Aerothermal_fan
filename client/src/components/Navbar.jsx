@@ -49,7 +49,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 px-6 sm:px-24 py-4">
+    <nav className="fixed top-0 left-0 w-full z-50 px-6 sm:px-24 py-4 select-none">
       <div className="flex items-center justify-between">
         {/* Logo */}
         <img

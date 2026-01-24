@@ -12,7 +12,7 @@ const About = () => {
         h-[calc(100vh-56px)]
         md:h-screen
         overflow-y-auto
-        px-4 sm:px-6 py-6
+        px-4 sm:px-6 py-6 select-none
       "
     >
       <div className="

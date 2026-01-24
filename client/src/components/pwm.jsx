@@ -22,6 +22,7 @@ const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
         py-3
         sm:px-4
         sm:py-4
+        select-none
       "
     >
       {/* Title */}

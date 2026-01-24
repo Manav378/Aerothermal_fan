@@ -23,6 +23,7 @@ const {language} = useContext(Appcontent)
         flex
         items-center
         justify-between
+       select-none
       "
     >
       {/* Text */}

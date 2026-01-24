@@ -34,6 +34,7 @@ export default function TemperatureGauge({ value }) {
         py-3
         sm:px-4
         sm:py-4
+        select-none
       "
     >
       {/* Title */}

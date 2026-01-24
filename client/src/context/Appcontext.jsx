@@ -112,41 +112,6 @@ const useDebounce = (value, delay) => {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const newTemp = Math.floor(Math.random() * 30) + 20; // 20–50
-  //     const newRpm = Math.floor(Math.random() * 2000) + 1000; // 1000–3000
-
-  //     setData({ temperature: newTemp, rpm: newRpm });
-
-  //     setGraphData(prev => [
-  //       ...prev.slice(-10),
-  //       {
-  //         time: new Date().toLocaleTimeString([], {
-  //           hour: "2-digit",
-  //           minute: "2-digit"
-  //         }),
-  //         temperature: newTemp,
-  //         rpm: newRpm
-  //       }
-  //     ]);
-  //   }, 1000);
-
-  //   return () => clearInterval(interval);
-  // }, []);
-
   const value = {
     backendUrl,
     isLoggedin, setisLoggedin,

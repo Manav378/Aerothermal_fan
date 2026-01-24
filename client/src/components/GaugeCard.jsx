@@ -17,6 +17,7 @@ const GaugeCard = ({ title, value, unit, color }) => {
         flex
         flex-col
         items-center
+        selet-none
       "
     >
       {/* Title */}

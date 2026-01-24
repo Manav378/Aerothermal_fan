@@ -20,6 +20,7 @@ const RPMCard = ({ value = 0 }) => {
         py-3
         sm:px-4
         sm:py-4
+        select-none
       "
     >
       {/* Label */}

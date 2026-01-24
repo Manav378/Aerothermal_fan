@@ -17,7 +17,7 @@ console.log(userData)
         text-center
         bg-linear-to-br from-[#020617] via-[#041b2d] to-[#020617]
         text-cyan-100
-        overflow-hidden
+        overflow-hidden select-none
       "
     >
       {/* Avatar */}

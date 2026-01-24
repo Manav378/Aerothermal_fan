@@ -19,6 +19,7 @@ const CurrentPWMCard = ({ pwm }) => {
         sm:px-4
         sm:py-4
         transition-colors
+        select-none
       "
     >
       {/* Label */}

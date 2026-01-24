@@ -99,7 +99,7 @@ useEffect(() => {
   }, [IsOnlineDeviceData]);
 
   return (
-    <div className="min-h-screen flex-1 p-4 sm:p-6 lg:p-8 bg-slate-100 text-black dark:bg-zinc-900 dark:text-white transition-colors duration-300">
+    <div className="min-h-screen flex-1 p-4 sm:p-6 lg:p-8 bg-slate-100 text-black select-none dark:bg-zinc-900 dark:text-white transition-colors duration-300">
       
       {/* HEADER */}
       <div className="mb-8 flex flex-col gap-3">

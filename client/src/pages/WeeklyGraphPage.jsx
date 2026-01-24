@@ -115,6 +115,7 @@ const WeeklyGraphPage = () => {
         overflow-y-auto
         px-4 sm:px-6 py-6
         bg-gray-100 dark:bg-zinc-900
+        select-none
       "
     >
       <div className="max-w-7xl mx-auto">
