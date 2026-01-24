@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   Sliders,
   Settings,
-  LogOut,
   Plus,
   Menu,
   X,
@@ -17,16 +16,11 @@ import { translations } from "../Theme/translation.js";
 
 
 const Sidebar = () => {
-  const navigate = useNavigate();
-  const { backendUrl, setuserData, setisLoggedin,language } = useContext(Appcontent);
+
+  const { language } = useContext(Appcontent);
   const [open, setOpen] = useState(false);
 const t = translations[language];
-  const logout = async () => {
-    await axios.post(backendUrl + "/api/auth/logout",  { withCredentials: true });
-    setisLoggedin(false);
-    setuserData(false);
-    navigate("/");
-  };
+
 
   const linkClass =
     "flex items-center gap-3 px-4 py-2 rounded-md text-gray-300 hover:bg-slate-800 dark:hover:bg-zinc-800 transition";
@@ -150,23 +144,7 @@ const t = translations[language];
           </NavLink>
         </nav>
 
-        {/* Logout */}
-        <button
-          onClick={logout}
-          className="
-            flex items-center gap-3
-            px-4 py-2
-            text-gray-400
-            hover:text-white
-            hover:bg-slate-800
-            dark:hover:bg-zinc-800
-            rounded-md
-            transition cursor-pointer
-          "
-        >
-          <LogOut size={18} />
-       {t?.logout}
-        </button>
+     
       </div>
     </>
   );

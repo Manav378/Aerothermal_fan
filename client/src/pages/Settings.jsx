@@ -5,11 +5,21 @@ import { Appcontent } from "../context/Appcontext";
 import axios from 'axios'
 import { toast } from "react-toastify";
 import { translations } from "../Theme/translation.js";
+import { useNavigate } from "react-router-dom";
 const Settings = () => {
  const [dark, setDark] = useState(localStorage.getItem("theme") === "dark");
 
- const {backendUrl,setlanguage,language} = useContext(Appcontent)
+ const {backendUrl,setlanguage,language,setuserData, setisLoggedin} = useContext(Appcontent)
  const t = translations[language];
+
+ const navigate = useNavigate()
+
+   const logout = async () => {
+    await axios.post(backendUrl + "/api/auth/logout",  { withCredentials: true });
+    setisLoggedin(false);
+    setuserData(false);
+    navigate("/");
+  };
  useEffect(() => {
   
   if(dark){
@@ -135,6 +145,45 @@ const Settings = () => {
     </button>
   </div>
 </div>
+
+
+<div className="bg-gray-100 dark:bg-zinc-800 rounded-lg p-4 shadow space-y-4 mt-6 w-full max-w-4xl mx-auto">
+  <h2 className="text-lg sm:text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+    Security & Access
+  </h2>
+
+  <p className="text-sm sm:text-base text-gray-500 dark:text-gray-300 mb-2">
+    Manage your account security
+  </p>
+
+  {/* Change Password */}
+  <div className="rounded-lg p-4 bg-blue-100 dark:bg-blue-900 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+    <span className="text-blue-700 dark:text-blue-300 font-medium">
+      Change / Reset Password
+    </span>
+    <button
+      onClick={() => navigate("/reset-password")}
+      className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white px-4 py-2 rounded transition-colors duration-200 self-start sm:self-auto"
+    >
+      Go
+    </button>
+  </div>
+
+  {/* Logout */}
+  <div className="rounded-lg p-4 bg-red-100 dark:bg-red-900 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+    <span className="text-red-700 dark:text-red-300 font-medium">
+      Logout
+    </span>
+    <button
+      onClick={logout}
+      className="bg-red-500 hover:bg-red-600 cursor-pointer text-white px-4 py-2 rounded transition-colors duration-200 self-start sm:self-auto"
+    >
+      Logout
+    </button>
+  </div>
+</div>
+
+
 
     </div>
   );
