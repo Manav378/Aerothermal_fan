@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { Appcontent } from "../context/Appcontext";
 import axios from 'axios'
 import { toast } from "react-toastify";
+import { translations } from "../Theme/translation.js";
 const Settings = () => {
  const [dark, setDark] = useState(localStorage.getItem("theme") === "dark");
 
  const {backendUrl,setlanguage,language} = useContext(Appcontent)
+ const t = translations[language];
  useEffect(() => {
   
   if(dark){
@@ -66,13 +68,13 @@ const Settings = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6 text-gray-900  select-none dark:text-gray-100">
-        Settings Preferences
+        {t?.settingsPreferences}
       </h1>
 
       {/* Theme Section */}
       <div className="p-4 bg-gray-100 dark:bg-zinc-800 rounded-md flex items-center justify-between">
         <span className="font-medium text-gray-900 dark:text-gray-100  select-none">
-          Theme
+          {t?.theme}
         </span>
         <button
           onClick={() => setDark(!dark)}
@@ -105,7 +107,7 @@ const Settings = () => {
 
       <div className="mt-6 p-4 bg-gray-100 dark:bg-zinc-800 rounded-md">
   <span className="font-medium text-gray-900 dark:text-gray-100 select-none">
-    Language
+      {t?.language}
   </span>
   <div className="flex gap-4 mt-2">
     <button
@@ -117,7 +119,7 @@ const Settings = () => {
         language === "en" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
       } hover:bg-blue-600`}
     >
-      English
+   {t?.english}
     </button>
 
     <button
@@ -129,7 +131,7 @@ const Settings = () => {
         language === "hi" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
       } hover:bg-blue-600`}
     >
-      हिन्दी
+      {t?.hindi}
     </button>
   </div>
 </div>

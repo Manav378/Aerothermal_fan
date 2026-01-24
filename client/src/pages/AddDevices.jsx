@@ -3,7 +3,7 @@ import axios from "axios";
 import { Appcontent } from "../context/Appcontext.jsx";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import { translations } from "../Theme/translation.js";
 const AddDevice = () => {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,9 +11,9 @@ const AddDevice = () => {
   const [passKey, setPassKey] = useState("");
   const [connecting, setConnecting] = useState(false);
 
-  const { backendUrl } = useContext(Appcontent);
+  const { backendUrl,language } = useContext(Appcontent);
   const navigate = useNavigate();
-
+const t = translations[language];
   // 🔹 Fetch already added devices
   useEffect(() => {
     const fetchDevices = async () => {
@@ -50,7 +50,7 @@ const AddDevice = () => {
       );
 
       if (!res.data.success) {
-        toast.error(res.data.message || "Failed to add device");
+       toast.error(res.data.message || t.toastAddFail);
         return;
       }
 
@@ -64,15 +64,13 @@ const AddDevice = () => {
         statusRes.data.device &&
         statusRes.data.device.isOnline
       ) {
-        toast.success("Device added successfully");
+       toast.success(t.toastAddedSuccess);
         navigate("/dashboard");
       } else {
-        toast.info(
-          "Device is offline. Dashboard will open when device comes online."
-        );
+       toast.info(t.toastDeviceOffline);
       }
     } catch (err) {
-      toast.error("Failed to connect device");
+      toast.error(t.toastConnectFail);
     } finally {
       setConnecting(false);
     }
@@ -84,19 +82,19 @@ const AddDevice = () => {
       {/* HEADER */}
       <div className="mb-8">
         <h2 className="text-2xl sm:text-3xl font-bold select-none">
-          Add Device
+         {t.addDeviceTitle}
         </h2>
       </div>
 
       {/* ADD DEVICE FORM */}
       <div className="max-w-sm mb-10 bg-white dark:bg-zinc-800 p-5 rounded-2xl shadow transition-colors duration-300">
         <label className="block mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Device Pass Key
+           {t.devicePassKey}
         </label>
 
         <input
           type="text"
-          placeholder="Enter device pass key"
+          placeholder={t.enterPassKey}
           value={passKey}
           onChange={(e) => setPassKey(e.target.value)}
           className="w-full rounded-lg px-3 py-2 mb-3
@@ -115,26 +113,26 @@ const AddDevice = () => {
                      text-white cursor-pointer
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {connecting ? "Connecting..." : "Add Device"}
+          {connecting ? t.connecting : t.addDeviceBtn}
         </button>
 
         <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-          Enter the pass key provided with your ESP32 device.
+           {t.passKeyHelp}
         </p>
       </div>
 
       {/* MY DEVICES */}
       <h3 className="text-xl font-semibold mb-4 select-none">
-        My Devices
+        {t.myDevices}
       </h3>
 
       {loading ? (
         <p className="text-zinc-500 dark:text-zinc-400">
-          Loading devices...
+        <p>{t.loadingDevices}</p>
         </p>
       ) : devices.length === 0 ? (
         <p className="text-zinc-500 dark:text-zinc-400">
-          No devices available. Add a device using its pass key.
+        <p>{t.noDevices}</p>
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -158,7 +156,7 @@ const AddDevice = () => {
               </div>
 
               <p className="text-sm mt-2">
-                Status:{" "}
+                {t.status}:{" "}
                 <span
                   className={
                     device.isOnline
@@ -166,12 +164,12 @@ const AddDevice = () => {
                       : "text-red-600 dark:text-red-400"
                   }
                 >
-                  {device.isOnline ? "Online" : "Offline"}
+              {device.isOnline ? t.online : t.offline}
                 </span>
               </p>
 
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                Last Seen: {new Date(device.lastSeen).toLocaleString()}
+                {t.lastSeen}: {new Date(device.lastSeen).toLocaleString()}
               </p>
             </div>
           ))}

@@ -11,14 +11,15 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { translations } from "../Theme/translation.js";
 
 const STORAGE_KEY = "weekly_graph_data";
 
 const WeeklyGraphPage = () => {
-  const { backendUrl, IsOnlineDeviceData } = useContext(Appcontent);
+  const { backendUrl, IsOnlineDeviceData,language } = useContext(Appcontent);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+ const t = translations[language];
   const dummyData = [
     { day: "Mon", temperature: 0, rpm: 0, pwm: 0 },
     { day: "Tue", temperature: 0, rpm: 0, pwm: 0 },
@@ -114,7 +115,7 @@ const WeeklyGraphPage = () => {
   if (loading) {
     return (
       <p className="text-center mt-20 text-lg text-gray-700 dark:text-gray-300">
-        Loading weekly data...
+        {t.loadingWeeklyData}
       </p>
     );
   }
@@ -124,29 +125,31 @@ const WeeklyGraphPage = () => {
       {/* DEVICE INFO */}
       {IsOnlineDeviceData && (
         <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-200">
-          Weekly Performance – {IsOnlineDeviceData.deviceName}{" "}
-          {IsOnlineDeviceData.isOnline ? "(Online)" : "(Offline)"}
+          {t.weeklyPerformance} – {IsOnlineDeviceData.deviceName}{" "}
+            {IsOnlineDeviceData.isOnline
+    ? `(${t.deviceOnline})`
+    : `(${t.deviceOffline})`}
         </h2>
       )}
 
       {/* SUMMARY CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Avg Temperature</p>
+          <p className="text-sm text-gray-500">{t.avgTemperature}</p>
           <p className="text-2xl font-bold text-red-500">
-            {average.temperature}°C
+            {average.temperature}{t.degreeUnit}
           </p>
         </div>
 
         <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Avg RPM</p>
+          <p className="text-sm text-gray-500">{t.avgRPM}</p>
           <p className="text-2xl font-bold text-blue-500">
-            {average.rpm} RPM
+            {average.rpm} {t.rpmUnit}
           </p>
         </div>
 
         <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg shadow">
-          <p className="text-sm text-gray-500">Avg PWM</p>
+          <p className="text-sm text-gray-500">{t.avgPWM}</p>
           <p className="text-2xl font-bold text-yellow-500">
             {average.pwm}
           </p>
@@ -170,7 +173,7 @@ const WeeklyGraphPage = () => {
 
         {!IsOnlineDeviceData?.isOnline && (
           <p className="text-xs text-center text-gray-500 mt-3">
-            Showing last synced data (device is offline)
+             {t.offlineWeeklyNote}
           </p>
         )}
       </div>

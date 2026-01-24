@@ -88,7 +88,7 @@ const useDebounce = (value, delay) => {
     try {
       const { data } = await axios.get(backendUrl + '/api/user/data')
       if(data.success) {
-        console.log(data.success)
+   
         setuserData(data.userData) 
         setisverify(data.userData.isAccountVerified)
         }else{

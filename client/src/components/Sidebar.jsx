@@ -12,11 +12,15 @@ import {
 import { Appcontent } from "../context/Appcontext";
 import axios from "axios";
 import { BarChart2 } from "lucide-react";
+import { translations } from "../Theme/translation.js";
+
+
+
 const Sidebar = () => {
   const navigate = useNavigate();
-  const { backendUrl, setuserData, setisLoggedin } = useContext(Appcontent);
+  const { backendUrl, setuserData, setisLoggedin,language } = useContext(Appcontent);
   const [open, setOpen] = useState(false);
-
+const t = translations[language];
   const logout = async () => {
     await axios.post(backendUrl + "/api/auth/logout",  { withCredentials: true });
     setisLoggedin(false);
@@ -80,7 +84,7 @@ const Sidebar = () => {
         {/* Close Button (mobile) */}
         <div className="flex items-center justify-between mb-6 md:hidden">
           <h1 className="text-lg font-semibold  select-none text-white tracking-wide">
-            Control Panel
+             {t?.controlPanel}
           </h1>
           <button onClick={() => setOpen(false)}>
             <X size={20} className="text-gray-400" />
@@ -89,7 +93,7 @@ const Sidebar = () => {
 
         {/* Desktop Title */}
         <h1 className="hidden md:block text-xl  select-none font-semibold text-white mb-8 text-center tracking-wide">
-          Control Panel
+         {t?.controlPanel}
         </h1>
 
         {/* Nav */}
@@ -101,7 +105,7 @@ const Sidebar = () => {
             }
           >
             <LayoutDashboard size={18} />
-            Dashboard
+         {t?.dashboard}
           </NavLink>
 
           <NavLink
@@ -111,7 +115,7 @@ const Sidebar = () => {
             }
           >
             <Plus size={18} />
-            Add Device
+          {t?.addDevice}
           </NavLink>
 
           <NavLink
@@ -121,7 +125,7 @@ const Sidebar = () => {
             }
           >
             <BarChart2 size={18} />
-            weekly Data
+          {t?.weeklyData}
           </NavLink>
 
           <NavLink
@@ -131,7 +135,7 @@ const Sidebar = () => {
             }
           >
             <Sliders size={18} />
-            About
+           {t?.about}
           </NavLink>
 
           <NavLink
@@ -141,7 +145,8 @@ const Sidebar = () => {
             }
           >
             <Settings size={18} />
-            Settings
+       {t?.settings}
+
           </NavLink>
         </nav>
 
@@ -160,7 +165,7 @@ const Sidebar = () => {
           "
         >
           <LogOut size={18} />
-          Logout
+       {t?.logout}
         </button>
       </div>
     </>

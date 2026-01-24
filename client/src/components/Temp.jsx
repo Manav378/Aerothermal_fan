@@ -1,5 +1,6 @@
-import React from "react";
-
+import React, { useContext } from "react";
+import { translations } from "../Theme/translation.js";
+import { Appcontent } from "../context/Appcontext.jsx";
 export default function TemperatureGauge({ value }) {
   const min = -10;
   const max = 60;
@@ -15,6 +16,9 @@ export default function TemperatureGauge({ value }) {
   let strokeColor = "#22c55e";
   if (safeTemp >= 30 && safeTemp <= 45) strokeColor = "#f59e0b";
   else if (safeTemp > 45) strokeColor = "#ef4444";
+
+    const { language } = useContext(Appcontent);
+  const t = translations[language];
 
   return (
     <div
@@ -34,7 +38,7 @@ export default function TemperatureGauge({ value }) {
     >
       {/* Title */}
       <h2 className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-2">
-        Temperature
+       {t?.temperature}
       </h2>
 
       {/* Gauge */}
@@ -84,7 +88,7 @@ export default function TemperatureGauge({ value }) {
                 : "text-red-600"
             }`}
           >
-            {safeTemp < 30 ? "Normal" : safeTemp <= 45 ? "Warning" : "Danger"}
+            {safeTemp < 30 ? t?.normal : safeTemp <= 45 ? t?.warning : t?.danger}
           </p>
         </div>
       </div>

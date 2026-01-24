@@ -8,7 +8,7 @@ import RpmGauge from "../components/RpmCard.jsx";
 import PWMSliderCard from "../components/pwm.jsx";
 import AutoModeCard from "../components/automode.jsx";
 import CurrentPWMCard from "../components/Currentpwm.jsx";
-
+import { translations } from "../Theme/translation.js";
 const Dashboard = () => {
   const {
     backendUrl,
@@ -20,10 +20,10 @@ const Dashboard = () => {
     setrpm,
     setpwm,
     fetchMyDevice,key, pwmSlider, setPwmSlider,autoMode,
-setAutoMode,useDebounce
+setAutoMode,useDebounce,language
   } = useContext(Appcontent);
 
-
+const t = translations[language];
 const debouncedPwm = useDebounce(pwmSlider, 300);
   // Load assigned device
 useEffect(() => {
@@ -103,16 +103,17 @@ useEffect(() => {
       
       {/* HEADER */}
       <div className="mb-8 flex flex-col gap-3">
-        <h1 className="text-2xl sm:text-3xl  select-none font-bold">Device Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl  select-none font-bold">{t.deviceDashboard}</h1>
 
         <div className="flex flex-wrap items-center gap-3">
           {/* Device Name */}
           <span className="px-4 py-1 rounded-full text-sm  select-none font-medium bg-zinc-200 dark:bg-zinc-800">
-            Device:{" "}
+            {t.deviceLabel}:{" "}
+
             {IsOnlineDeviceData?.isOnline ? (
               <span>{IsOnlineDeviceData.deviceName} 😎</span>
             ) : (
-              <span>Inactive 😕</span>
+              <span>{t.inactive} 😕</span>
             )}
           </span>
 
@@ -124,7 +125,7 @@ useEffect(() => {
                 : "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"
             }`}
           >
-            ● {IsOnlineDeviceData?.isOnline ? "Online" : "Offline"}
+            ● {IsOnlineDeviceData?.isOnline ? t.online : t.offline}
           </span>
         </div>
       </div>
