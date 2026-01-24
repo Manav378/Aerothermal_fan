@@ -19,33 +19,37 @@ import WeeklyGraphPage from './pages/WeeklyGraphPage.jsx';
 const AppLayout = () => {
   const location = useLocation();
 
- const protectedRoutes = ["/dashboard", "/about", "/settings" , "/add-device","/week-data"];
-const showSidebar = protectedRoutes.includes(location.pathname);
+  const protectedRoutes = [
+    "/dashboard",
+    "/about",
+    "/settings",
+    "/add-device",
+    "/week-data",
+  ];
 
-useEffect(() => {
-  const theme = localStorage.getItem("theme");
-  if (theme === "dark") {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
-}, []); // only on first render
+  const showSidebar = protectedRoutes.includes(location.pathname);
+
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
 
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
       {showSidebar && <Sidebar />}
-      
+
       {/* Page Content */}
-      <main
-        className={`flex-1  `}
-         
-      >
+      <main className="flex-1 pt-14 md:pt-0">
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/email-verify' element={<EmailVerify />} />
-          <Route path='/reset-password' element={<ResetPassword />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/email-verify" element={<EmailVerify />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/about" element={<About />} />
           <Route path="/settings" element={<Settings />} />

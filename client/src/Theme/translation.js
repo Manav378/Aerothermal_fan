@@ -114,6 +114,10 @@ export const translations = {
 
     english: "English",
     hindi: "Hindi",
+    changereset:"Change/Reset",
+    security:"Security & Access",
+    Manage:"Manage your account security",
+    go:"Go",
 
 
 
@@ -250,8 +254,10 @@ offlineWeeklyNote: "Showing last synced data (device is offline)",
 
     english: "अंग्रेज़ी",
     hindi: "हिन्दी",
-
-
+    changereset:"पासवर्ड बदलें / रीसेट करें",
+    security:"सुरक्षा और पहुँच",
+    Manage:"अपने अकाउंट की सुरक्षा प्रबंधित करें",
+    go:"जाएँ",
 
 
     // Weekly Graph Page
@@ -269,6 +275,10 @@ deviceOnline: "ऑनलाइन",
 deviceOffline: "ऑफलाइन",
 
 offlineWeeklyNote: "डिवाइस ऑफलाइन है, पिछला सेव किया गया डेटा दिखाया जा रहा है",
+
+
+
+
 
   },
 };

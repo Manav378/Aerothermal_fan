@@ -149,36 +149,36 @@ const Settings = () => {
 
 <div className="bg-gray-100 dark:bg-zinc-800 rounded-lg p-4 shadow space-y-4 mt-6 w-full max-w-4xl mx-auto">
   <h2 className="text-lg sm:text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
-    Security & Access
+   {t?.security}
   </h2>
 
   <p className="text-sm sm:text-base text-gray-500 dark:text-gray-300 mb-2">
-    Manage your account security
+  {t?.Manage}
   </p>
 
   {/* Change Password */}
   <div className="rounded-lg p-4 bg-blue-100 dark:bg-blue-900 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
     <span className="text-blue-700 dark:text-blue-300 font-medium">
-      Change / Reset Password
+      {t?.changereset}
     </span>
     <button
       onClick={() => navigate("/reset-password")}
       className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white px-4 py-2 rounded transition-colors duration-200 self-start sm:self-auto"
     >
-      Go
+      {t?.go}
     </button>
   </div>
 
   {/* Logout */}
   <div className="rounded-lg p-4 bg-red-100 dark:bg-red-900 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
     <span className="text-red-700 dark:text-red-300 font-medium">
-      Logout
+        {t?.logout}
     </span>
     <button
       onClick={logout}
       className="bg-red-500 hover:bg-red-600 cursor-pointer text-white px-4 py-2 rounded transition-colors duration-200 self-start sm:self-auto"
     >
-      Logout
+      {t?.logout}
     </button>
   </div>
 </div>

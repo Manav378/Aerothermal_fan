@@ -128,11 +128,11 @@ const t = translations[language];
 
       {loading ? (
         <p className="text-zinc-500 dark:text-zinc-400">
-        <p>{t.loadingDevices}</p>
+        <span>{t?.loadingDevices}</span>
         </p>
       ) : devices.length === 0 ? (
         <p className="text-zinc-500 dark:text-zinc-400">
-        <p>{t.noDevices}</p>
+        <span>{t.noDevices}</span>
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
