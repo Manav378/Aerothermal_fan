@@ -3,8 +3,8 @@ import DeviceModels from "../models/Device.model.js";
 import UserModel from "../models/user.model.js";
 import { decryptPhone } from "../utils/crypto.js";
 import { sendTempAlertSms } from "../utils/SMS.js";
-import mongoose from "mongoose";
-const ALERT_GAP = 10 * 60 * 1000;
+
+const ALERT_GAP = 2 * 60 * 1000;
 const TEMP_LIMIT = 50;
 
 export const sensorController = async (req, res) => {
