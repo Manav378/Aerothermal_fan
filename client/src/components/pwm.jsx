@@ -32,7 +32,7 @@ const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
 
       {/* Percentage */}
       <p className="text-base sm:text-lg  select-none font-semibold text-center text-emerald-600 mb-2">
-        {percent}%
+        {percent}
       </p>
 
       {/* Controls */}
