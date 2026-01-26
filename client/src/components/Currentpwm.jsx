@@ -39,7 +39,7 @@ const CurrentPWMCard = ({ pwm }) => {
           dark:text-blue-400
         "
       >
-        {pwm}%
+        {pwm}
       </h2>
     </div>
   );

@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { Appcontent } from "../context/Appcontext";
 const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
     const {language} = useContext(Appcontent)
-  const MIN = 0;
+  const MIN = 80;
   const MAX = 255;
   const percent = Math.round((value / MAX) * 100);
 
@@ -32,7 +32,7 @@ const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
 
       {/* Percentage */}
       <p className="text-base sm:text-lg  select-none font-semibold text-center text-emerald-600 mb-2">
-        {percent}
+        {percent}%
       </p>
 
       {/* Controls */}
@@ -82,7 +82,7 @@ const PWMSliderCard = ({ value = 126, setValue, disabled = false }) => {
 
       {/* Min / Max */}
       <div className="flex  select-none justify-between text-xs text-gray-400 dark:text-gray-500 mt-2">
-        <span>0</span>
+        <span>80</span>
         <span>255</span>
       </div>
     </div>
