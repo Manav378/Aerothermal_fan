@@ -33,52 +33,35 @@ const WeeklyGraphPage = () => {
     { day: "Sun", temperature: 0, rpm: 0, pwm: 0 },
   ];
 
-  useEffect(() => {
-    const fetchWeeklyData = async () => {
-      setLoading(true);
+useEffect(() => {
+  const fetchWeeklyData = async () => {
+    setLoading(true);
 
-      if (!IsOnlineDeviceData?._id || !IsOnlineDeviceData.isOnline) {
-        const savedData = localStorage.getItem(STORAGE_KEY);
-        setData(savedData ? JSON.parse(savedData) : dummyData);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await axios.get(
-          `${backendUrl}/api/RawData/${IsOnlineDeviceData._id}/raw-weekly`
-        );
-
-        const last7 = res.data.slice(-7);
-        const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-        const chartData =
-          last7.length > 0
-            ? last7.map((item, index) => ({
-                day: days[index % 7],
-                temperature: item.temperature,
-                rpm: item.rpm,
-                pwm: item.pwm,
-              }))
-            : days.map((day) => ({
-                day,
-                temperature: IsOnlineDeviceData.temperature,
-                rpm: IsOnlineDeviceData.rpm,
-                pwm: IsOnlineDeviceData.pwm,
-              }));
-
-        setData(chartData);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(chartData));
-      } catch (err) {
-        const savedData = localStorage.getItem(STORAGE_KEY);
-        setData(savedData ? JSON.parse(savedData) : dummyData);
-      }
-
+    if (!IsOnlineDeviceData?._id) {
+      setData(dummyData);
       setLoading(false);
-    };
+      return;
+    }
 
-    fetchWeeklyData();
-  }, [IsOnlineDeviceData, backendUrl]);
+    try {
+      const res = await axios.get(
+        `${backendUrl}/api/weekly/${IsOnlineDeviceData._id}`
+      );
+
+      const chartData = res.data.length ? res.data : dummyData;
+      setData(chartData);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(chartData));
+    } catch (err) {
+      const savedData = localStorage.getItem(STORAGE_KEY);
+      setData(savedData ? JSON.parse(savedData) : dummyData);
+    }
+
+    setLoading(false);
+  };
+
+  fetchWeeklyData();
+}, [IsOnlineDeviceData?._id, backendUrl]);
+
 
   const summary = data.reduce(
     (acc, item) => {

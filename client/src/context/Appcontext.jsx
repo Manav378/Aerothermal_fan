@@ -34,14 +34,14 @@ const fetchMyDevice = async () => {
     if (data.success) {
       setIsOnlineDeviceData(data.device);
 
-      // ✅ Live values
+      
       settemperature(data.device.temperature || 0);
       setrpm(data.device.rpm || 0);
       setpwm(data.device.pwm || 0);
 
       setkey(data.device.devicePass_Key);
 
-      // ❗ ONLY FIRST TIME init
+
       setAutoMode(prev =>
         prev === null ? data.device.autoMode : prev
       );

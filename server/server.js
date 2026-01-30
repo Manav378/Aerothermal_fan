@@ -10,7 +10,7 @@ import DeviceRouter from './src/routes/device.routes.js'
 import Rawrouter from './src/routes/raw.routes.js'
 import { aggregateWeeklyData } from './src/controller/weeklyController.js'
 import PreferencesRouter from './src/routes/preferences.routes.js'
-
+import './src/utils/cron.js'
 
 
 
@@ -41,7 +41,7 @@ app.get("/" , (req,res)=>{
     res.status(200).send("API working")
 })
 app.use('/api/dashboard', dashboardroute)
-app.use('/api/RawData', Rawrouter)
+app.use('/api/weekly', Rawrouter)
 app.use("/api/auth",authrouter)
 app.use("/api/device" , DeviceRouter)
 app.use("/api/pref" , PreferencesRouter)

@@ -43,7 +43,7 @@ export const getMyActiveDevice = async (req, res) => {
   }
 
   const isOnline =
-    Date.now() - new Date(device.lastSeen).getTime() < 30000;
+    Date.now() - new Date(device.lastSeen).getTime() < OFFLINE_TIME;
 
   if (!isOnline) {
     device.isActive = false;

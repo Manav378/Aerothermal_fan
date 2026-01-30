@@ -1,11 +1,11 @@
 import express from 'express'
-import { getWeeklyRawData } from '../controller/rawDatacontroller.js'
+import { getWeeklySummary } from '../controller/rawDatacontroller.js'
 
 
 const Rawrouter = express.Router()
 
 
 
-Rawrouter.get('/:deviceId/raw-weekly', getWeeklyRawData)
+Rawrouter.get('/:deviceId', getWeeklySummary)
 
 export default Rawrouter

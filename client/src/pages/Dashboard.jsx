@@ -22,6 +22,7 @@ const Dashboard = () => {
     fetchMyDevice,key, pwmSlider, setPwmSlider,autoMode,
 setAutoMode,useDebounce,language
   } = useContext(Appcontent);
+  const [predTemp, setpredTemp] = useState(null);
 
 const t = translations[language];
 const debouncedPwm = useDebounce(pwmSlider, 300);
@@ -35,6 +36,40 @@ useEffect(() => {
 
   return () => clearInterval(interval);
 }, []);
+
+
+
+//predicted temperature
+
+useEffect(() => {
+  if (!backendUrl || !key || !IsOnlineDeviceData?.isOnline) return;
+
+  let isMounted = true;
+
+  const fetchpredTemp = async () => {
+    try {
+      const res = await axios.get(
+        `${backendUrl}/api/dashboard/predict/${key}`
+      );
+      console.log(res.data)
+
+      if (isMounted) {
+        setpredTemp(res.data.predictedTemperature);
+      }
+    } catch (err) {
+      console.log("Prediction fetch error:", err.message);
+    }
+  };
+
+  fetchpredTemp();
+
+  const interval = setInterval(fetchpredTemp, 3000);
+
+  return () => {
+    isMounted = false;
+    clearInterval(interval);
+  };
+}, [backendUrl, key, IsOnlineDeviceData?.isOnline]);
 
 
 
@@ -135,7 +170,7 @@ useEffect(() => {
         
         {/* Temperature */}
         <div className="w-full bg-white dark:bg-zinc-800 p-4 sm:p-5 rounded-2xl shadow transition-colors duration-300">
-          <TemperatureGauge value={temprature} />
+          <TemperatureGauge value={temprature} predicted={predTemp !== null ? predTemp : temprature} />
         </div>
 
         {/* RPM */}

@@ -1,11 +1,15 @@
 import WeeklySummary from "../models/WeeklySummary.js";
 
-export const getWeeklyRawData = async (req, res) => {
-    try {
+export const getWeeklySummary = async (req, res) => {
+  try {
     const { deviceId } = req.params;
-    const summary = await WeeklySummary.findOne({ device: deviceId }).sort({ weekStart: -1 });
+
+    const summary = await WeeklySummary
+      .findOne({ device: deviceId })
+      .sort({ weekStart: -1 });
+
     res.json(summary ? summary.data : []);
-  } catch(err) {
+  } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };

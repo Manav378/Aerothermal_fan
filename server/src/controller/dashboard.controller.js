@@ -1,8 +1,9 @@
-import DeviceRawData from "../models/DeviceRawData.js";
+
 import DeviceModels from "../models/Device.model.js";
-import UserModel from "../models/user.model.js";
 import { decryptPhone } from "../utils/crypto.js";
 import { sendTempAlertSms } from "../utils/SMS.js";
+import DeviceHistoryModel from "../models/DeviceHistory.model.js";
+
 
 const ALERT_GAP = 2 * 60 * 1000;
 const TEMP_LIMIT = 50;
@@ -41,13 +42,13 @@ export const sensorController = async (req, res) => {
     }
 
   
+await DeviceHistoryModel.create({
+  device: device._id,
+  temperature,
+  rpm,
+  pwm
+});
 
-    await DeviceRawData.create({
-      device: device._id,
-      temperature,
-      rpm,
-      pwm,
-    });
 
  
 
@@ -144,3 +145,5 @@ export const pwmStatusController = async (req, res) => {
     manualPWM: device.pwmValue,
   });
 };
+
+

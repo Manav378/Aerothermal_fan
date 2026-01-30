@@ -1,0 +1,38 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Data files (if large)
+data/
+*.csv
+*.tsv
+*.h5
+*.npy
+
+# ML models
+*.pkl
+*.joblib
+*.hdf5
+*.pt
+*.ckpt
+*.sav
+
+# Logs
+*.log
+logs/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE / editor settings
+.vscode/
