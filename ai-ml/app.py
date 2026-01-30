@@ -1,4 +1,4 @@
-# ai-ml/app.py
+# api/predict.py
 from flask import Flask, jsonify
 from db import raw_collection
 import pandas as pd
@@ -9,11 +9,7 @@ app = Flask(__name__)
 @app.route("/predict", methods=["GET"])
 def predict_temperature():
     try:
-        cursor = raw_collection.find(
-            {}, 
-            {"_id": 0, "temperature": 1, "rpm": 1, "pwm": 1, "createdAt": 1}
-        ).sort("createdAt", 1).limit(100)
-
+        cursor = raw_collection.find({}, {"_id": 0, "temperature": 1, "rpm": 1, "pwm": 1, "createdAt": 1}).sort("createdAt", 1).limit(100)
         data = list(cursor)
         if len(data) < 20:
             return jsonify({"status": "INSUFFICIENT_DATA"})
@@ -51,9 +47,5 @@ def predict_temperature():
             "currentTemperature": float(current_temp),
             "predictedTemperature": round(float(future_temp), 2)
         })
-
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)})
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
