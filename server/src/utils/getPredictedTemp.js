@@ -3,7 +3,7 @@ import axios from "axios";
 export const getTemperaturePrediction = async (req, res) => {
   try {
     // Production me python API ka URL environment variable se use karo
-const PYTHON_API_URL = process.env.PYTHON_API_URL || "https://aerothermal-fan-ai-ml.vercel.app/api/predict";
+const PYTHON_API_URL = process.env.PYTHON_API_URL || "https://aerothermal-fan-ai-ml.onrender.com/api/predict";
 
 
     const response = await axios.get(PYTHON_API_URL);
