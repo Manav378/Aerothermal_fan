@@ -7,7 +7,7 @@ import {
   Plus,
   Menu,
   X,
-  BarChart2,
+  BarChart2,Activity  
 } from "lucide-react";
 import { Appcontent } from "../context/Appcontext";
 import { translations } from "../Theme/translation.js";
@@ -125,6 +125,16 @@ const Sidebar = () => {
             {t?.addDevice}
           </NavLink>
 
+          <NavLink
+            to="/predict-temp"
+            onClick={() => setOpen(false)}
+            className={({ isActive }) =>
+              `${linkClass} ${isActive ? activeClass : ""}`
+            }
+          >
+            <Activity  size={18} />
+            PredictTemp
+          </NavLink>
           <NavLink
             to="/week-data"
             onClick={() => setOpen(false)}

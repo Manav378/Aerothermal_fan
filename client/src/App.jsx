@@ -14,6 +14,7 @@ import Settings from './pages/Settings.jsx';
 import { useEffect } from 'react';
 import AddDevice from './pages/AddDevices.jsx';
 import WeeklyGraphPage from './pages/WeeklyGraphPage.jsx';
+import TempPredictor from './pages/TempPredictor.jsx';
 
 
 const AppLayout = () => {
@@ -25,6 +26,7 @@ const AppLayout = () => {
     "/settings",
     "/add-device",
     "/week-data",
+    "/predict-temp"
   ];
 
   const showSidebar = protectedRoutes.includes(location.pathname);
@@ -59,6 +61,7 @@ const AppLayout = () => {
           <Route path="/settings" element={<Settings />} />
           <Route path="/add-device" element={<AddDevice />} />
           <Route path="/week-data" element={<WeeklyGraphPage />} />
+          <Route path="/predict-temp" element={<TempPredictor />} />
         </Routes>
       </main>
     </div>
