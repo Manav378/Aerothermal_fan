@@ -37,23 +37,28 @@ const TemperatureDashboard = () => {
     return saved ? JSON.parse(saved) : DEFAULT_DATA;
   });
 
-  const fetchData = async () => {
-    try {
-      if (!backendUrl || !key) return;
+const fetchData = async () => {
+  try {
+    if (!backendUrl || !key) return;
 
-      const res = await axios.get(
-        `${backendUrl}/api/dashboard/predict/${key}`
-      );
+    const res = await axios.get(
+      `${backendUrl}/api/dashboard/predict/${key}`,
+      { timeout: 15000 } // ⬅️ VERY IMPORTANT
+    );
 
-      setData(res.data);
-      localStorage.setItem(
-        "temp-dashboard",
-        JSON.stringify(res.data)
-      );
-    } catch (err) {
-      console.error("Error fetching temperature:", err.message);
+    setData(res.data);
+    localStorage.setItem("temp-dashboard", JSON.stringify(res.data));
+
+  } catch (err) {
+    if (err.response?.status === 502) {
+      console.warn("⚠️ Backend temporarily unavailable");
+      return; // ⛔ STOP updating UI
     }
-  };
+
+    console.error("Prediction fetch error:", err.message);
+  }
+};
+
 
   useEffect(() => {
     fetchData();
