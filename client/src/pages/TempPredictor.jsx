@@ -1,30 +1,55 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import axios from "axios";
-import { FiAlertCircle, FiTrendingUp, FiTrendingDown } from "react-icons/fi";
+import {
+  FiAlertCircle,
+  FiTrendingUp,
+  FiTrendingDown,
+} from "react-icons/fi";
 import { FaFan } from "react-icons/fa";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 import { Appcontent } from "../context/Appcontext";
+
+const DEFAULT_DATA = {
+  currentTemperature: 0,
+  predictedTemperature: 0,
+  futureTemperatures: [],
+  trend: "STABLE",
+  fanSpeed: 0,
+  buzzer: false,
+  alert: "NORMAL",
+  history: [],
+};
 
 const TemperatureDashboard = () => {
   const { backendUrl, key } = useContext(Appcontent);
+  const intervalRef = useRef(null);
 
-  const [data, setData] = useState({
-    currentTemperature: 0,
-    predictedTemperature: 0,
-    futureTemperatures: [],
-    trend: "STABLE",
-    fanSpeed: 0,
-    buzzer: false,
-    alert: "NORMAL",
-    history: []
+  const [data, setData] = useState(() => {
+    const saved = localStorage.getItem("temp-dashboard");
+    return saved ? JSON.parse(saved) : DEFAULT_DATA;
   });
 
   const fetchData = async () => {
     try {
-      if (!key || !backendUrl) return;
+      if (!backendUrl || !key) return;
+
       const res = await axios.get(
         `${backendUrl}/api/dashboard/predict/${key}`
       );
+
       setData(res.data);
+      localStorage.setItem(
+        "temp-dashboard",
+        JSON.stringify(res.data)
+      );
     } catch (err) {
       console.error("Error fetching temperature:", err.message);
     }
@@ -32,9 +57,15 @@ const TemperatureDashboard = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
-  }, []);
+
+    intervalRef.current = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        fetchData();
+      }
+    }, 3000);
+
+    return () => clearInterval(intervalRef.current);
+  }, [backendUrl, key]);
 
   const alertColor =
     data.alert === "NORMAL"
@@ -50,25 +81,35 @@ const TemperatureDashboard = () => {
       <FiTrendingDown className="text-green-500 ml-2" />
     ) : null;
 
+  const chartData = Array.isArray(data.history)
+    ? data.history.map((item, index) => ({
+        time: index + 1,
+        temperature: item.temperature,
+      }))
+    : [];
+
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6 dark:bg-zinc-900 dark:text-zinc-200 min-h-screen">
+    <div className="h-screen overflow-y-auto px-6 py-6 space-y-8 dark:bg-zinc-900 dark:text-zinc-200">
       <h1 className="text-3xl font-bold text-center">
-        Temperature Dashboard
+        🌡️ Temperature Dashboard
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-
-        {/* Current Temp */}
+      {/* 🔲 Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         <Card title="Current Temp">
-          <Value value={`${data.currentTemperature}°C`} danger={data.currentTemperature > 45} />
+          <Value
+            value={`${data.currentTemperature}°C`}
+            danger={data.currentTemperature > 45}
+          />
         </Card>
 
-        {/* Predicted Temp */}
         <Card title="Predicted Temp">
-          <Value value={`${data.predictedTemperature}°C`} danger={data.predictedTemperature > 45} />
+          <Value
+            value={`${data.predictedTemperature}°C`}
+            danger={data.predictedTemperature > 45}
+          />
         </Card>
 
-        {/* Trend */}
         <Card title="Trend">
           <p className="text-xl font-bold flex items-center justify-center">
             {data.trend}
@@ -76,69 +117,111 @@ const TemperatureDashboard = () => {
           </p>
         </Card>
 
-        {/* Fan Speed */}
         <Card title="Fan Speed">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-center gap-3">
             <FaFan
               className="text-3xl animate-spin-slow"
-              style={{ animationDuration: `${3 - data.fanSpeed / 60}s` }}
+              style={{
+                animationDuration: `${Math.max(
+                  0.8,
+                  3 - data.fanSpeed / 60
+                )}s`,
+              }}
             />
-            <span className="text-xl font-bold">{data.fanSpeed}%</span>
+            <span className="text-xl font-bold">
+              {data.fanSpeed}%
+            </span>
           </div>
         </Card>
 
-        {/* Buzzer */}
         <Card title="Buzzer">
           <p
             className={`text-xl font-bold ${
-              data.buzzer ? "text-red-500 animate-pulse" : "text-gray-400"
+              data.buzzer
+                ? "text-red-500 animate-pulse"
+                : "text-gray-400"
             }`}
           >
             {data.buzzer ? "ON 🔊" : "OFF"}
           </p>
         </Card>
 
-        {/* Alert */}
         <Card title="Alert">
-          <p className={`text-xl font-bold flex items-center justify-center ${alertColor}`}>
+          <p
+            className={`text-xl font-bold flex items-center justify-center ${alertColor}`}
+          >
             <FiAlertCircle className="mr-2" />
             {data.alert}
           </p>
         </Card>
       </div>
 
-      {/* 🔮 Future Temperature Prediction */}
+      {/* 📊 Temperature History Chart */}
+     <div className="bg-gray-100 dark:bg-zinc-800 rounded-2xl p-5 shadow">
+  <h3 className="text-lg font-semibold mb-4">
+    📈 Temperature History
+  </h3>
+
+  {chartData.length > 1 && (
+    <div className="w-full min-h-[300px]">
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="time" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="temperature"
+            stroke="#ef4444"
+            strokeWidth={3}
+            dot={false}
+            isAnimationActive={false}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  )}
+</div>
+
+
+      {/* 🔮 Future Prediction */}
       <div className="bg-gray-100 dark:bg-zinc-800 rounded-xl p-4 shadow">
-        <h3 className="text-lg font-semibold mb-2">
-          Future Temperature (Next Readings)
+        <h3 className="text-lg font-semibold mb-3">
+          🔮 Future Temperature
         </h3>
-        <div className="flex space-x-4">
-          {data.futureTemperatures.map((t, i) => (
-            <div
-              key={i}
-              className="px-3 py-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg text-center"
-            >
-              <p className="text-sm">+{(i + 1) * 30}s</p>
-              <p className="font-bold">{t}°C</p>
-            </div>
-          ))}
+
+        <div className="flex gap-3 overflow-x-auto">
+          {Array.isArray(data.futureTemperatures) &&
+            data.futureTemperatures.map((t, i) => (
+              <div
+                key={i}
+                className="min-w-[90px] px-3 py-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg text-center"
+              >
+                <p className="text-sm">+{(i + 1) * 30}s</p>
+                <p className="font-bold">{t}°C</p>
+              </div>
+            ))}
         </div>
       </div>
-
     </div>
   );
 };
 
-/* 🔧 Reusable components */
+/* 🔧 Reusable Components */
 const Card = ({ title, children }) => (
-  <div className="bg-gray-100 dark:bg-zinc-800 rounded-xl p-4 shadow text-center">
+  <div className="bg-gray-100 dark:bg-zinc-800 rounded-2xl p-4 shadow text-center">
     <h3 className="text-lg font-semibold mb-2">{title}</h3>
     {children}
   </div>
 );
 
 const Value = ({ value, danger }) => (
-  <p className={`text-2xl font-bold ${danger ? "text-red-500" : ""}`}>
+  <p
+    className={`text-2xl font-bold ${
+      danger ? "text-red-500" : ""
+    }`}
+  >
     {value}
   </p>
 );
