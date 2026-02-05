@@ -6,15 +6,13 @@ import traceback
 
 app = Flask(__name__)
 
-# -------------------------------------------------
-# GLOBAL MODEL (train once)
-# -------------------------------------------------
 model = None
+last_train_size = 0
 WINDOW = 5
 
-# -------------------------------------------------
-# Health check
-# -------------------------------------------------
+# -------------------------------
+# Health
+# -------------------------------
 @app.route("/")
 def health():
     return {
@@ -22,9 +20,9 @@ def health():
         "message": "Accurate Aerothermal Fan ML API 🚀"
     }
 
-# -------------------------------------------------
-# Train model ONCE
-# -------------------------------------------------
+# -------------------------------
+# Train model
+# -------------------------------
 def train_model(df):
     temps = df["temp_s"].values
     rpms = df["rpm_s"].values
@@ -45,22 +43,21 @@ def train_model(df):
         X.append(row)
         y.append(temps[i + WINDOW])
 
-    model = RandomForestRegressor(
-        n_estimators=120,      # 🔥 reduced for production
+    m = RandomForestRegressor(
+        n_estimators=120,
         max_depth=10,
         random_state=42
     )
-    model.fit(X, y)
-    return model
+    m.fit(X, y)
+    return m
 
-# -------------------------------------------------
+# -------------------------------
 # Prediction API
-# -------------------------------------------------
+# -------------------------------
 @app.route("/api/predict", methods=["GET"])
 def predict_temperature():
-    global model
+    global model, last_train_size
     try:
-        # 1️⃣ Fast Mongo query
         cursor = raw_collection.find(
             {},
             {
@@ -89,7 +86,7 @@ def predict_temperature():
 
         df = pd.DataFrame(data)
 
-        # 2️⃣ Noise smoothing
+        # smoothing
         df["temp_s"] = df["temperature"].rolling(3).mean()
         df["rpm_s"] = df["rpm"].rolling(3).mean()
         df["pwm_s"] = df["pwm"].rolling(3).mean()
@@ -97,16 +94,20 @@ def predict_temperature():
         df["hour"] = pd.to_datetime(df["createdAt"]).dt.hour
         df = df.dropna()
 
-        # 3️⃣ Train model once
-        if model is None:
+        # retrain if new data
+        if model is None or len(df) != last_train_size:
             model = train_model(df)
+            last_train_size = len(df)
 
         temps = df["temp_s"].values
         rpms = df["rpm_s"].values
         pwms = df["pwm_s"].values
         hours = df["hour"].values
 
-        # 4️⃣ Predict next value
+        raw_temps = df["temperature"].values
+        current = raw_temps[-1]   # 🔥 real sensor temp
+
+        # predict next
         latest = []
         for i in range(WINDOW):
             latest.extend([
@@ -117,12 +118,11 @@ def predict_temperature():
             ])
 
         predicted = model.predict([latest])[0]
-        current = temps[-1]
 
-        # 5️⃣ Stabilize output
+        # stabilize
         predicted = (0.75 * predicted) + (0.25 * current)
 
-        # 6️⃣ Future prediction (5 steps)
+        # future
         future = []
         t, r, p, h = list(temps), list(rpms), list(pwms), list(hours)
 
@@ -138,14 +138,14 @@ def predict_temperature():
             p.append(p[-1])
             h.append(h[-1])
 
-        # 7️⃣ Trend logic
+        # trend
         trend = "STABLE"
         if future[-1] - current > 1.5:
             trend = "RISING"
         elif current - future[-1] > 1.5:
             trend = "FALLING"
 
-        # 8️⃣ Control logic
+        # control logic
         fan_speed = 30
         buzzer = False
         alert = "NORMAL"
@@ -162,12 +162,10 @@ def predict_temperature():
             alert = "SENSOR_ANOMALY"
             buzzer = True
 
-        # 9️⃣ History for dashboard
         history = df.tail(10)[
             ["temperature", "rpm", "pwm", "createdAt"]
         ].to_dict(orient="records")
 
-        # 🔟 Final response
         return jsonify({
             "status": "OK",
             "history": history,
@@ -180,7 +178,7 @@ def predict_temperature():
             "alert": alert
         })
 
-    except Exception as e:
+    except Exception:
         print(traceback.format_exc())
         return jsonify({
             "status": "FAILED",
@@ -194,8 +192,5 @@ def predict_temperature():
             "alert": "ERROR"
         })
 
-# -------------------------------------------------
-# Local run (Render ignores this)
-# -------------------------------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
