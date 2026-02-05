@@ -2,7 +2,7 @@ import cron from 'node-cron'
 import {aggregateWeeklyData} from '../controller/weeklyController.js'
 
 
-cron.schedule('0 0 * * 0' , async ()=>{
+cron.schedule('* * * * *' , async ()=>{
       console.log('Running main aggregation job at:', new Date());
       try {
         await aggregateWeeklyData();
