@@ -1,4 +1,6 @@
+import client from '../utils/redis.js'
 import DeviceModels from "../models/Device.model.js";
+
 
 const OFFLINE_TIME = 30 * 1000;
 
@@ -42,6 +44,21 @@ export const getMyActiveDevice = async (req, res) => {
     return res.json({ success: false });
   }
 
+  const redisKey =  `device:${device.devicePass_Key}:latest`;
+  // console.log(redisKey)
+
+  const cached = await client.get(redisKey)
+  console.log(cached)
+
+  if(cached){
+    return res.json({
+      success:true,
+      device:JSON.parse(cached),
+      source:"Redis"
+
+    })
+  }
+
   const isOnline =
     Date.now() - new Date(device.lastSeen).getTime() < OFFLINE_TIME;
 
@@ -65,7 +82,8 @@ export const getMyActiveDevice = async (req, res) => {
       pwm: device.pwm,
     pwmValue: device.pwmValue,
     autoMode: device.autoMode,
-      isOnline
+      isOnline,
+      source:"mongodb"
     }
   });
 };

@@ -51,8 +51,7 @@ useEffect(() => {
       const res = await axios.get(
         `${backendUrl}/api/dashboard/predict/${key}`
       );
-      console.log(res.data)
-
+    
       if (isMounted) {
         setpredTemp(res.data.predictedTemperature);
       }

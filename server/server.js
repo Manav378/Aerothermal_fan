@@ -14,6 +14,7 @@ import './src/utils/cron.js'
 
 
 
+
 console.log("server")
 dotenv.config();
 const app = express()

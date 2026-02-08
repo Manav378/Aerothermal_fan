@@ -3,20 +3,24 @@ import DeviceModels from "../models/Device.model.js";
 import { decryptPhone } from "../utils/crypto.js";
 import { sendTempAlertSms } from "../utils/SMS.js";
 import DeviceHistoryModel from "../models/DeviceHistory.model.js";
-
+import client from "../utils/redis.js";
 
 const ALERT_GAP = 2 * 60 * 1000;
 const TEMP_LIMIT = 50;
-
 export const sensorController = async (req, res) => {
   try {
     const { devicePass_Key, deviceName, temperature, rpm, pwm } = req.body;
-  
 
-    if (!devicePass_Key)
-      return res.status(400).json({ success: false, message: "devicePass_Key is required" });
+    if (!devicePass_Key) {
+      return res
+        .status(400)
+        .json({ success: false, message: "devicePass_Key is required" });
+    }
 
-    let device = await DeviceModels.findOne({ devicePass_Key }).populate({path:"user" , select:"phone iv"});
+    let device = await DeviceModels.findOne({ devicePass_Key }).populate({
+      path: "user",
+      select: "phone iv",
+    });
 
     if (!device) {
       device = await DeviceModels.create({
@@ -35,24 +39,39 @@ export const sensorController = async (req, res) => {
       device.pwm = pwm;
       device.isOnline = true;
       device.lastSeen = new Date();
-
-     
-
       await device.save();
     }
 
-  
-await DeviceHistoryModel.create({
-  device: device._id,
-  temperature,
-  rpm,
-  pwm
-});
+    // 📌 History (Mongo only)
+    await DeviceHistoryModel.create({
+      device: device._id,
+      temperature,
+      rpm,
+      pwm,
+    });
+
+const redisKey = `device:${device.devicePass_Key}:latest`;
+
+await client.setEx(redisKey, 60, JSON.stringify({
+  _id: device._id,
+  devicePass_Key: device.devicePass_Key,
+  deviceName: device.deviceName,
+  temperature: device.temperature,
+  rpm: device.rpm,
+  pwm: device.pwm,
+  pwmValue: device.pwmValue,
+  autoMode: device.autoMode,
+  isOnline: true,
+  lastSeen: new Date()
+}));
 
 
- 
 
-    if (temperature > TEMP_LIMIT && (!device.lastAlertAt ||Date.now() - new Date(device.lastAlertAt).getTime() > ALERT_GAP)) {
+    if (
+      temperature > TEMP_LIMIT &&
+      (!device.lastAlertAt ||
+        Date.now() - new Date(device.lastAlertAt).getTime() > ALERT_GAP)
+    ) {
       for (const u of device.user) {
         if (u?.phone) {
           const phone = decryptPhone(u.phone, u.iv);
@@ -66,14 +85,17 @@ await DeviceHistoryModel.create({
     res.json({
       success: true,
       deviceName: device.deviceName,
-      temperature: device.temperature,
-      rpm: device.rpm,
-      pwm: device.pwm,
+      temperature,
+      rpm,
+      pwm,
       isOnline: true,
     });
   } catch (error) {
     console.log("Sensor Error:", error);
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
