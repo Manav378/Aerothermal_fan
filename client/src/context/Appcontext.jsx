@@ -33,6 +33,10 @@ useEffect(() => {
 }, [language]);
 
 
+
+useEffect(() => {
+  localStorage.setItem("language", language || "en");
+}, [language]);
 const fetchMyDevice = async () => {
   try {
     const { data } = await axios.get(`${backendUrl}/api/device/my-device` ,{withCredentials:true});
