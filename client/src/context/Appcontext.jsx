@@ -26,7 +26,11 @@ const [language, setlanguage] = useState(
   const [key, setkey] = useState('');
 const [pwmSlider, setPwmSlider] = useState(null);
 const [autoMode, setAutoMode] = useState(null);
-
+useEffect(() => {
+  if (!language) {
+    setlanguage("en");
+  }
+}, [language]);
 
 
 const fetchMyDevice = async () => {
