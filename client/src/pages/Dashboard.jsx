@@ -8,7 +8,7 @@ import RpmGauge from "../components/RpmCard.jsx";
 import PWMSliderCard from "../components/pwm.jsx";
 import AutoModeCard from "../components/automode.jsx";
 import CurrentPWMCard from "../components/Currentpwm.jsx";
-import Humidity from "../components/humidity.jsx";
+import Humidity from "../components/Humidity.jsx";
 import Heatindex from "../components/heatindex.jsx";
 import { translations } from "../Theme/translation.js";
 
