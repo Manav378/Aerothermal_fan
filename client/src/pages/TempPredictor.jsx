@@ -101,7 +101,7 @@ return (
       🌡️ Temperature Dashboard
     </h1>
 
-     <div className="flex items-center justify-start gap-3 mb-4">
+     <div className="flex items-center justify-start gap-3 mb-3">
       {/* Device Name */}
 
  

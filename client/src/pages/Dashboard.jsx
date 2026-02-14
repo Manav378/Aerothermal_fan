@@ -150,7 +150,7 @@ useEffect(() => {
       
       {/* HEADER */}
       <div className="mb-8 flex flex-col gap-3">
-        <h1 className="text-2xl sm:text-3xl  select-none font-bold">{t.deviceDashboard}</h1>
+        <h1 className="text-2xl sm:text-3xl  select-none font-bold">{t?.deviceDashboard}</h1>
 
         <div className="flex flex-wrap items-center gap-3">
           {/* Device Name */}
