@@ -1,14 +1,13 @@
-import client from '../utils/redis.js'
+import client from "../utils/redis.js";
 import DeviceModels from "../models/Device.model.js";
 
-
-const OFFLINE_TIME = 30 * 1000;
+const OFFLINE_TIME = 60 * 1000;
 
 export const getDevice = async (req, res) => {
   try {
-    const userId = req.UserId
+    const userId = req.UserId;
 
-    const devices = await DeviceModels.find({user: userId });
+    const devices = await DeviceModels.find({ user: userId });
 
     const updatedIsOnline = devices.map((device) => {
       const isOnline =
@@ -37,30 +36,21 @@ export const getDevice = async (req, res) => {
 export const getMyActiveDevice = async (req, res) => {
   const device = await DeviceModels.findOne({
     user: req.UserId,
-    isActive: true
+    isActive: true,
   });
 
   if (!device) {
     return res.json({ success: false });
   }
 
-  const redisKey =  `device:${device.devicePass_Key}:latest`;
-  // console.log(redisKey)
-
-  const cached = await client.get(redisKey)
-  console.log(cached)
-
-  if(cached){
-    return res.json({
-      success:true,
-      device:JSON.parse(cached),
-      source:"Redis"
-
-    })
-  }
-
   const isOnline =
+    device.lastSeen &&
     Date.now() - new Date(device.lastSeen).getTime() < OFFLINE_TIME;
+
+  const redisKey = `device:${device.devicePass_Key}:latest`;
+  const cached = await client.get(redisKey);
+
+
 
   if (!isOnline) {
     device.isActive = false;
@@ -68,74 +58,71 @@ export const getMyActiveDevice = async (req, res) => {
     device.temperature = 0;
     device.rpm = 0;
     device.pwm = 0;
+    device.heatindex = 0;
+    device.humidity = 0;
     await device.save();
+    return res.json({success:true , message:"device is offline"})
   }
 
-  res.json({
+
+
+  if (cached && device.isActive) {
+    const parsed = JSON.parse(cached);
+
+    return res.json({
+      success: true,
+      device: {
+        ...parsed,
+        pwmValue: device.pwmValue,
+        autoMode: device.autoMode,
+        isOnline: true,
+      },
+      source: "redis",
+    });
+  }
+
+
+
+  // fallback mongo
+  return res.json({
     success: true,
     device: {
-      _id: device._id,  
-      devicePass_Key:device.devicePass_Key,
-      deviceName: device.deviceName,
-      temperature: device.temperature,
-      rpm: device.rpm,
-      pwm: device.pwm,
-    pwmValue: device.pwmValue,
-    autoMode: device.autoMode,
-      isOnline,
-      source:"mongodb"
-    }
+      ...device._doc,
+      isOnline: true,
+    },
+    source: "mongodb",
   });
 };
+
 
 export const Adddevice = async (req, res) => {
   const { devicePass_Key, EnterdevicePass_Key } = req.body;
   const userId = req.UserId;
 
-
-  // 1️⃣ Find the device by passkey
   const device = await DeviceModels.findOne({ devicePass_Key });
   if (!device) {
     return res.json({ success: false, message: "Invalid passkey" });
   }
 
-  // 2️⃣ Check if entered passkey matches
   if (EnterdevicePass_Key !== device.devicePass_Key) {
     return res.json({ success: false, message: "Wrong passkey" });
   }
 
- 
-
-  // 3️⃣ Initialize users array if not present
   if (!device.user) device.user = [];
 
-  // 4️⃣ Add current user to users array if not already added
   if (!device.user.includes(userId)) {
     device.user.push(userId);
   }
 
-  // 5️⃣ Deactivate all other devices of this user
   await DeviceModels.updateMany(
     { user: userId },
-    { $set: { isActive: false } }
+    { $set: { isActive: false } },
   );
 
-  // 6️⃣ Update device info for this user
   device.isVerified = true;
   device.isActive = true;
 
-
   await device.save();
 
-  // 7️⃣ Respond with success
   res.json({ success: true, deviceId: device._id });
 };
-
-
-
-
-
-
-
-
-

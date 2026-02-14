@@ -20,6 +20,8 @@ const [language, setlanguage] = useState(
   const [temprature, settemperature] = useState(0);
   const [rpm, setrpm] = useState(0);
   const [pwm, setpwm] = useState(0);
+  const [humidity, sethumidity] = useState(0);
+  const [heatindex, setheatindex] = useState(0);
   const [IsOnlineDeviceData, setIsOnlineDeviceData] = useState(null);
   const [key, setkey] = useState('');
 const [pwmSlider, setPwmSlider] = useState(null);
@@ -30,16 +32,19 @@ const [autoMode, setAutoMode] = useState(null);
 const fetchMyDevice = async () => {
   try {
     const { data } = await axios.get(`${backendUrl}/api/device/my-device` ,{withCredentials:true});
-    console.log(data)
+    // console.log(data)
 
 
     if (data.success) {
       setIsOnlineDeviceData(data.device);
+      console.log(data);
 
       
       settemperature(data.device.temperature || 0);
       setrpm(data.device.rpm || 0);
       setpwm(data.device.pwm || 0);
+      sethumidity(data.device.humidity || 0);
+      setheatindex(data.device.heatindex || 0);
 
       setkey(data.device.devicePass_Key);
 
@@ -49,7 +54,7 @@ const fetchMyDevice = async () => {
       );
 
       setPwmSlider(prev =>
-        prev === null ? data.device.pwm : prev
+        prev === null ? data.device.pwmValue : prev
       );
     }
   } catch (err) {
@@ -122,7 +127,7 @@ const useDebounce = (value, delay) => {
     pwm, setIsOnlineDeviceData, IsOnlineDeviceData,
     settemperature, setrpm, setpwm, fetchMyDevice, key,
      pwmSlider,setPwmSlider,autoMode,setAutoMode,useDebounce,
-     setisverify,isverify,setlanguage,language
+     setisverify,isverify,setlanguage,language,sethumidity,humidity,heatindex,setheatindex
   }
 
 

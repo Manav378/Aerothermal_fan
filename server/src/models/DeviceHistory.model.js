@@ -11,6 +11,8 @@ const DeviceHistorySchema = new mongoose.Schema({
   temperature: Number,
   rpm: Number,
   pwm: Number,
+  heatindex:Number,
+  humidity:Number,
 }, { timestamps: true });
 
 DeviceHistorySchema.index(

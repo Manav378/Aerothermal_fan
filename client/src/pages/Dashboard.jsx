@@ -8,6 +8,8 @@ import RpmGauge from "../components/RpmCard.jsx";
 import PWMSliderCard from "../components/pwm.jsx";
 import AutoModeCard from "../components/automode.jsx";
 import CurrentPWMCard from "../components/Currentpwm.jsx";
+import Humidity from "../components/humidity.jsx";
+import Heatindex from "../components/heatindex.jsx";
 import { translations } from "../Theme/translation.js";
 const Dashboard = () => {
   const {
@@ -19,6 +21,10 @@ const Dashboard = () => {
     settemperature,
     setrpm,
     setpwm,
+    setheatindex,
+    sethumidity,
+    humidity,
+    heatindex,
     fetchMyDevice,key, pwmSlider, setPwmSlider,autoMode,
 setAutoMode,useDebounce,language
   } = useContext(Appcontent);
@@ -42,7 +48,10 @@ useEffect(() => {
 //predicted temperature
 
 useEffect(() => {
-  if (!backendUrl || !key || !IsOnlineDeviceData?.isOnline) return;
+  if (!backendUrl || !key || !IsOnlineDeviceData?.isOnline) {
+    setpredTemp(0);
+    return;
+  }
 
   let isMounted = true;
 
@@ -125,15 +134,19 @@ useEffect(() => {
       settemperature(0);
       setrpm(0);
       setpwm(0);
+      sethumidity(0);
+      setheatindex(0)
     } else {
       settemperature(IsOnlineDeviceData.temperature || 0);
       setrpm(IsOnlineDeviceData.rpm || 0);
       setpwm(IsOnlineDeviceData.pwm || 0);
+      setheatindex(IsOnlineDeviceData.heatindex || 0);
+      sethumidity(IsOnlineDeviceData.humidity || 0);
     }
   }, [IsOnlineDeviceData]);
 
   return (
-    <div className="min-h-screen flex-1 p-4 sm:p-6 lg:p-8 bg-slate-100 text-black select-none dark:bg-zinc-900 dark:text-white transition-colors duration-300">
+    <div className="min-h-screen flex-1 p-4 sm:p-6 lg:p-8 bg-slate-100   h-[calc(100vh-56px)]  overflow-y-auto text-black select-none dark:bg-zinc-900 dark:text-white transition-colors duration-300">
       
       {/* HEADER */}
       <div className="mb-8 flex flex-col gap-3">
@@ -180,6 +193,16 @@ useEffect(() => {
         {/* Current PWM */}
         <div className="w-full bg-white dark:bg-zinc-800 p-4 sm:p-5 rounded-2xl shadow transition-colors duration-300">
           <CurrentPWMCard pwm={pwm} />
+        </div>
+
+        {/* Humidity*/}
+        <div className="w-full bg-white dark:bg-zinc-800 p-4 sm:p-5 rounded-2xl shadow transition-colors duration-300">
+          <Humidity parameter={humidity} />
+        </div>
+
+        {/* HeatIndex*/}
+        <div className="w-full bg-white dark:bg-zinc-800 p-4 sm:p-5 rounded-2xl shadow transition-colors duration-300">
+          <Heatindex parameter={heatindex} />
         </div>
 
         {/* PWM Slider */}

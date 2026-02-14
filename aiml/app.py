@@ -79,8 +79,6 @@ def predict_temperature():
                 "predictedTemperature": 0,
                 "futureTemperatures": [],
                 "trend": "STABLE",
-                "fanSpeed": 0,
-                "buzzer": False,
                 "alert": "WAITING_DATA"
             })
 
@@ -145,22 +143,17 @@ def predict_temperature():
         elif current - future[-1] > 1.5:
             trend = "FALLING"
 
-        # control logic
-        fan_speed = 30
-        buzzer = False
         alert = "NORMAL"
 
         if predicted >= 45:
-            fan_speed = 90
-            buzzer = True
             alert = "OVERHEAT_SOON"
         elif predicted >= 40:
-            fan_speed = 60
+    
             alert = "RISING_TEMP"
 
         if abs(predicted - current) > 7:
             alert = "SENSOR_ANOMALY"
-            buzzer = True
+           
 
         history = df.tail(10)[
             ["temperature", "rpm", "pwm", "createdAt"]
@@ -173,8 +166,6 @@ def predict_temperature():
             "predictedTemperature": round(float(predicted), 2),
             "futureTemperatures": future,
             "trend": trend,
-            "fanSpeed": fan_speed,
-            "buzzer": buzzer,
             "alert": alert
         })
 
@@ -187,8 +178,6 @@ def predict_temperature():
             "predictedTemperature": 0,
             "futureTemperatures": [],
             "trend": "STABLE",
-            "fanSpeed": 0,
-            "buzzer": False,
             "alert": "ERROR"
         })
 

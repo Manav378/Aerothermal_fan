@@ -16,6 +16,8 @@ const WeeklySummarySchema = new mongoose.Schema({
       temperature: Number,
       rpm: Number,
       pwm: Number,
+      heatindex:Number,
+      humidity:Number
     }
   ]
 });

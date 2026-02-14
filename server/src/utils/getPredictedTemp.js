@@ -10,7 +10,8 @@ const PYTHON_API_URL = process.env.PYTHON_API_URL || main_url;
 
 
     const response = await axios.get(PYTHON_API_URL);
-    // console.log(res.data)
+
+ 
     res.json(response.data);
   } catch (error) {
     console.error("Prediction fetch error:", error.message);

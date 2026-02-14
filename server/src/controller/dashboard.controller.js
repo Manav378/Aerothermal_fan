@@ -1,4 +1,3 @@
-
 import DeviceModels from "../models/Device.model.js";
 import { decryptPhone } from "../utils/crypto.js";
 import { sendTempAlertSms } from "../utils/SMS.js";
@@ -9,7 +8,15 @@ const ALERT_GAP = 2 * 60 * 1000;
 const TEMP_LIMIT = 50;
 export const sensorController = async (req, res) => {
   try {
-    const { devicePass_Key, deviceName, temperature, rpm, pwm } = req.body;
+    const {
+      devicePass_Key,
+      deviceName,
+      temperature,
+      rpm,
+      pwm,
+      heatindex,
+      humidity,
+    } = req.body;
 
     if (!devicePass_Key) {
       return res
@@ -29,6 +36,8 @@ export const sensorController = async (req, res) => {
         temperature,
         rpm,
         pwm,
+        heatindex,
+        humidity,
         isOnline: true,
         lastSeen: new Date(),
       });
@@ -37,10 +46,13 @@ export const sensorController = async (req, res) => {
       device.temperature = temperature;
       device.rpm = rpm;
       device.pwm = pwm;
+      device.humidity = humidity,
+      device.heatindex = heatindex,
       device.isOnline = true;
       device.lastSeen = new Date();
       await device.save();
     }
+
 
     // 📌 History (Mongo only)
     await DeviceHistoryModel.create({
@@ -48,24 +60,31 @@ export const sensorController = async (req, res) => {
       temperature,
       rpm,
       pwm,
+      humidity,
+      heatindex,
     });
 
-const redisKey = `device:${device.devicePass_Key}:latest`;
+    //redis storage
 
-await client.setEx(redisKey, 60, JSON.stringify({
-  _id: device._id,
-  devicePass_Key: device.devicePass_Key,
-  deviceName: device.deviceName,
-  temperature: device.temperature,
-  rpm: device.rpm,
-  pwm: device.pwm,
-  pwmValue: device.pwmValue,
-  autoMode: device.autoMode,
-  isOnline: true,
-  lastSeen: new Date()
-}));
+    const redisKey = `device:${device.devicePass_Key}:latest`;
 
-
+    await client.setEx(
+      redisKey,
+      70,
+      JSON.stringify({
+        _id: device._id,
+        devicePass_Key: device.devicePass_Key,
+        deviceName: device.deviceName,
+        temperature: device.temperature,
+        rpm: device.rpm,
+        pwm: device.pwm,
+        pwmValue: device.pwmValue,
+        humidity: device.humidity,
+        heatindex: device.heatindex,
+        isOnline: true,
+        lastSeen: new Date(),
+      }),
+    );
 
     if (
       temperature > TEMP_LIMIT &&
@@ -88,6 +107,8 @@ await client.setEx(redisKey, 60, JSON.stringify({
       temperature,
       rpm,
       pwm,
+      heatindex,
+      humidity,
       isOnline: true,
     });
   } catch (error) {
@@ -98,9 +119,6 @@ await client.setEx(redisKey, 60, JSON.stringify({
     });
   }
 };
-
-
-
 
 export const pwmSliderController = async (req, res) => {
   const { duty } = req.body;
@@ -125,6 +143,26 @@ export const pwmSliderController = async (req, res) => {
 
   device.pwmValue = duty;
   await device.save();
+
+  const redisKey = `device:${device.devicePass_Key}:latest`;
+const isAllowedOnline = device.isVerified && device.isActive;
+  await client.setEx(
+    redisKey,
+    70,
+    JSON.stringify({
+      _id: device._id,
+      devicePass_Key: device.devicePass_Key,
+      deviceName: device.deviceName,
+      temperature: device.temperature,
+      rpm: device.rpm,
+      pwm: device.pwm,
+      pwmValue: device.pwmValue,
+      humidity: device.humidity,
+      heatindex: device.heatindex,
+      isOnline: isAllowedOnline,
+      lastSeen: new Date(),
+    }),
+  );
 
   res.json({ success: true, pwm: duty });
 };
@@ -167,5 +205,3 @@ export const pwmStatusController = async (req, res) => {
     manualPWM: device.pwmValue,
   });
 };
-
-
