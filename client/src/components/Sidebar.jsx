@@ -133,7 +133,7 @@ const Sidebar = () => {
             }
           >
             <Activity  size={18} />
-            PredictTemp
+            {t.PredictTemp}
           </NavLink>
           <NavLink
             to="/week-data"

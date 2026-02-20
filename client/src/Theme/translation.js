@@ -16,6 +16,7 @@ export const translations = {
     about: "About",
     settings: "Settings",
     logout: "Logout",
+    PredictTemp:"Predict Temp",
 
 
      // Temperature Gauge
@@ -157,6 +158,7 @@ offlineWeeklyNote: "Showing last synced data (device is offline)",
     about: "परिचय",
     settings: "सेटिंग्स",
     logout: "लॉगआउट",
+    PredictTemp: "पूर्वानुमानित तापमान",
 
 
      // Temperature Gauge
